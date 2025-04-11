@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="auraq.timelinegantt.TimelineGantt" pluginWidget="true" needsEntityContext="true" offlineCapable="true"
+        supportedPlatform="Web"
+        xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+    <name>Timeline Gantt</name>
+    <description>My widget description</description>
+    <icon/>
+    <properties>
+        <propertyGroup caption="Display">
+            <propertyGroup caption="Data">
+                <property key="item_data" type="datasource" isList="true" required="true">
+                    <caption>Items data source</caption>
+                    <description />
+                </property>
+                <property key="item_group" type="association" selectableObjects="group_data" dataSource="item_data" required="false">
+                    <caption>Groups association</caption>
+                    <description></description>
+                    <associationTypes>
+                        <associationType name="Reference"/>
+                    </associationTypes>
+                </property>
+                <property key="group_data" type="datasource" isList="true" required="false">
+                    <caption>Groups data source</caption>
+                    <description>UNUSED! Needs to be the same type as Groups associtaion</description>
+                </property>
+                <systemProperty key="Editability"/>
+            </propertyGroup>
+            <propertyGroup caption="General">
+                <property key="width" type="string" required="true" defaultValue="100%">
+                    <caption>Width</caption>
+                    <description></description>
+                </property>
+                <property key="height" type="string" required="false" defaultValue="">
+                    <caption>Height</caption>
+                    <description></description>
+                </property>
+                <property key="minHeight" type="string" required="false" defaultValue="">
+                    <caption>Min height</caption>
+                    <description></description>
+                </property>
+                <property key="maxHeight" type="string" required="false" defaultValue="">
+                    <caption>Max height</caption>
+                    <description></description>
+                </property>
+                <property key="start" type="expression" required="false">
+                    <caption>Start date</caption>
+                    <description></description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="end" type="expression" required="false">
+                    <caption>End date</caption>
+                    <description>The initial date for the axis of the timeline.</description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="min" type="expression" required="false">
+                    <caption>Min date</caption>
+                    <description></description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="max" type="expression" required="false">
+                    <caption>Max date</caption>
+                    <description>Constrained date of the timeline.</description>
+                    <returnType type="DateTime" />
+                </property>
+                <!-- hiddenDates -->
+                <property key="autoResize" type="boolean" required="true" defaultValue="true">
+                    <caption>Auto resize?</caption>
+                    <description></description>
+                </property>
+                <property key="clickToUse" type="boolean" required="true" defaultValue="false">
+                    <caption>Click to use?</caption>
+                    <description></description>
+                </property>
+                <property key="horizontalScroll" type="boolean" required="true" defaultValue="false">
+                    <caption>Horizontal scroll?</caption>
+                    <description></description>
+                </property>
+                <property key="verticalScroll" type="boolean" required="true" defaultValue="false">
+                    <caption>Vertical scroll?</caption>
+                    <description></description>
+                </property>
+                <!-- locale -->
+                <!-- longSelectPressTime -->
+                <property key="moveable" type="boolean" required="true" defaultValue="false">
+                    <caption>Moveable?</caption>
+                    <description>Specifies whether the Timeline can be moved and zoomed by dragging the window.</description>
+                </property>
+                <property key="rtl" type="boolean" required="true" defaultValue="false">
+                    <caption>Right-to-left?</caption>
+                    <description></description>
+                </property>
+                <!-- sequentialSelection -->
+                <property key="showCurrentTime" type="boolean" required="true" defaultValue="true">
+                    <caption>Show current time?</caption>
+                    <description></description>
+                </property>
+                <property key="showMajorLabels" type="boolean" required="true" defaultValue="true">
+                    <caption>Show major labels?</caption>
+                    <description></description>
+                </property>
+                <property key="showMinorLabels" type="boolean" required="true" defaultValue="true">
+                    <caption>Show minor labels?</caption>
+                    <description></description>
+                </property>
+                <property key="showWeekScale" type="boolean" required="true" defaultValue="false">
+                    <caption>Show week scale?</caption>
+                    <description></description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Zoom">
+                <property key="zoomable" type="boolean" required="true" defaultValue="true">
+                    <caption>Zoomable?</caption>
+                    <description></description>
+                </property>
+                <property key="preferZoom" type="boolean" required="true" defaultValue="false">
+                    <caption>Prefer zoom?</caption>
+                    <description>If true, scrolling vertically on timeline center panel will be prevented, and zoom action will be preferred, without need of zoomKey.</description>
+                </property>
+                <property key="zoomKey" type="enumeration" required="true" defaultValue="none">
+                    <caption>Zoom key</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="none">None</enumerationValue>
+                        <enumerationValue key="altKey">ALT</enumerationValue>
+                        <enumerationValue key="ctrlKey">CTRL</enumerationValue>
+                        <enumerationValue key="shiftKey">SHIFT</enumerationValue>
+                        <enumerationValue key="metaKey">META</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="zoomFriction" type="integer" required="true" defaultValue="5">
+                    <caption>Zoom friction</caption>
+                    <description></description>
+                </property>
+                <property key="zoomMax" type="integer" required="true" defaultValue="100">
+                    <caption>Zoom max</caption>
+                    <description></description>
+                </property>
+                <property key="zoomMax_unit" type="enumeration" required="true" defaultValue="year">
+                    <caption>Unit</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="second">Second</enumerationValue>
+                        <enumerationValue key="minute">Minute</enumerationValue>
+                        <enumerationValue key="hour">Hour</enumerationValue>
+                        <enumerationValue key="day">Day</enumerationValue>
+                        <enumerationValue key="week">Week</enumerationValue>
+                        <enumerationValue key="month">Month</enumerationValue>
+                        <enumerationValue key="year">Year</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="zoomMin" type="integer" required="true" defaultValue="1">
+                    <caption>Zoom min</caption>
+                    <description></description>
+                </property>
+                <property key="zoomMin_unit" type="enumeration" required="true" defaultValue="second">
+                    <caption>Unit</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="second">Second</enumerationValue>
+                        <enumerationValue key="minute">Minute</enumerationValue>
+                        <enumerationValue key="hour">Hour</enumerationValue>
+                        <enumerationValue key="day">Day</enumerationValue>
+                        <enumerationValue key="week">Week</enumerationValue>
+                        <enumerationValue key="month">Month</enumerationValue>
+                        <enumerationValue key="year">Year</enumerationValue>
+                    </enumerationValues>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Tooltip">
+                <property key="showTooltips" type="boolean" required="true" defaultValue="true">
+                    <caption>Show tooltips?</caption>
+                    <description></description>
+                </property>
+                <property key="tooltipFollowMouse" type="boolean" required="true" defaultValue="false">
+                    <caption>Follow mouse?</caption>
+                    <description></description>
+                </property>
+                <property key="tooltipOverflowMethod" type="enumeration" defaultValue="flip">
+                    <caption>Overflow method</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="cap">Cap</enumerationValue>
+                        <enumerationValue key="flip">Flip</enumerationValue>
+                        <enumerationValue key="none">None</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="tooltipDelay" type="integer" required="true" defaultValue="500">
+                    <caption>Tooltip delay (ms)</caption>
+                    <description></description>
+                </property>
+                <!-- tooltipTemplate -->
+            </propertyGroup>
+            <propertyGroup caption="Rolling mode">
+                <property key="rollingModeFollow" type="boolean" required="true" defaultValue="false">
+                    <caption>Follow?</caption>
+                    <description>If true, the timeline will initial in a rolling mode - the current time will always be centered. I the user drags the timeline, the timeline will go out of rolling mode and a toggle button will appear.</description>
+                </property>
+                <property key="rollingModeOffset" type="decimal" required="true" defaultValue="0.5">
+                    <caption>Offset</caption>
+                    <description>Set how far from the left the rolling mode is implemented from.</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Time Axis">
+                <property key="timeAxisScale" type="enumeration" defaultValue="auto">
+                    <caption>Fixed scale</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="auto">Auto</enumerationValue>
+                        <enumerationValue key="millisecond">Millisecond</enumerationValue>
+                        <enumerationValue key="second">Second</enumerationValue>
+                        <enumerationValue key="minute">Minute</enumerationValue>
+                        <enumerationValue key="hour">Hour</enumerationValue>
+                        <enumerationValue key="weekday">Weekday</enumerationValue>
+                        <enumerationValue key="week">Week</enumerationValue>
+                        <enumerationValue key="day">Day</enumerationValue>
+                        <enumerationValue key="month">Month</enumerationValue>
+                        <enumerationValue key="year">Year</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="timeAxisStep" type="integer" required="true" defaultValue="1">
+                    <caption>Step</caption>
+                    <description></description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Orientation">
+                <property key="orientationAxis" type="enumeration" defaultValue="bottom">
+                    <caption>Axis</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="top">Top</enumerationValue>
+                        <enumerationValue key="bottom">Bottom</enumerationValue>
+                        <enumerationValue key="both">Both</enumerationValue>
+                        <enumerationValue key="none">None</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="orientationItem" type="enumeration" defaultValue="bottom">
+                    <caption>Item</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="top">Top</enumerationValue>
+                        <enumerationValue key="bottom">Bottom</enumerationValue>
+                    </enumerationValues>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Margin">
+                <property key="marginAxis" type="integer" required="true" defaultValue="20">
+                    <caption>Axis</caption>
+                    <description></description>
+                </property>
+                <property key="marginItemHorizontal" type="integer" required="true" defaultValue="10">
+                    <caption>Item horizontal</caption>
+                    <description></description>
+                </property>
+                <property key="marginItemVertical" type="integer" required="true" defaultValue="10">
+                    <caption>Item vertical</caption>
+                    <description></description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Items">
+            <propertyGroup caption="General">
+                <property key="item_content" type="expression" required="true" dataSource="item_data">
+                    <caption>Content</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+                <property key="item_title" type="expression" required="false" dataSource="item_data">
+                    <caption>Title</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+                <property key="item_startdate" type="attribute" required="true" dataSource="item_data">
+                    <caption>Start date</caption>
+                    <description></description>
+                    <attributeTypes>
+                        <attributeType name="DateTime"/>
+                    </attributeTypes>
+                </property>
+                <property key="item_startdateAttr" type="string" required="false">
+                    <caption>Start date attribute</caption>
+                    <description></description>
+                </property>
+                <property key="item_enddate" type="attribute" required="false" dataSource="item_data">
+                    <caption>End date</caption>
+                    <description></description>
+                    <attributeTypes>
+                        <attributeType name="DateTime"/>
+                    </attributeTypes>
+                </property>
+                <property key="item_enddateAttr" type="string" required="false">
+                    <caption>End date attribute</caption>
+                    <description></description>
+                </property>
+                
+                <property key="item_type" type="expression" required="false" dataSource="item_data">
+                    <caption>Type</caption>
+                    <description>Can be 'box', 'point', 'range', 'background' or empty (use default)</description>
+                    <returnType type="String" />
+                </property>
+                <property key="type" type="enumeration" required="true" defaultValue="box">
+                    <caption>Default type</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="box">Box</enumerationValue>
+                        <enumerationValue key="point">Point</enumerationValue>
+                        <enumerationValue key="range">Range</enumerationValue>
+                        <enumerationValue key="background">Background</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="item_align" type="expression" required="false" dataSource="item_data">
+                    <caption>Alignment</caption>
+                    <description>Can be 'auto', 'center', 'left', or 'right'</description>
+                    <returnType type="String" />
+                </property>
+                <property key="align" type="enumeration" defaultValue="auto">
+                    <caption>Default alignment</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="auto">Auto</enumerationValue>
+                        <enumerationValue key="center">Center</enumerationValue>
+                        <enumerationValue key="left">Left</enumerationValue>
+                        <enumerationValue key="right">Right</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="stack" type="boolean" required="true" defaultValue="true">
+                    <caption>Stack?</caption>
+                    <description></description>
+                </property>
+                <property key="stackSubgroups" type="boolean" required="true" defaultValue="true">
+                    <caption>Stack subgroups?</caption>
+                    <description></description>
+                </property>
+                <property key="selectable" type="boolean" required="true" defaultValue="true">
+                    <caption>Selectable?</caption>
+                    <description></description>
+                </property>
+                <property key="item_selectable" type="expression" required="false" dataSource="item_data">
+                    <caption>Item selectable?</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="multiselect" type="boolean" required="true" defaultValue="false">
+                    <caption>Multiselect?</caption>
+                    <description>If true, multiple items can be selected using ctrl+click, shift+click, or by holding items.</description>
+                </property>
+                <property key="multiselectPerGroup" type="boolean" required="true" defaultValue="false">
+                    <caption>Multiselect per group?</caption>
+                    <description>If true, selecting multiple items using shift+click will only select items residing in the same group as the first selected item.</description>
+                </property>
+                <property key="item_class" type="string" required="false">
+                    <caption>Class</caption>
+                    <description></description>
+                </property>
+                <property key="item_dynamicClass" type="expression" required="false" dataSource="item_data">
+                    <caption>Dynamic classes</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Editability">
+                <property key="editableAdd" type="boolean" required="true" defaultValue="false">
+                    <caption>Can add?</caption>
+                    <description>If true, new items can be created by double tapping an empty space in the Timeline.</description>
+                </property>
+                <property key="editableRemove" type="boolean" required="true" defaultValue="false">
+                    <caption>Can remove?</caption>
+                    <description>If true, items can be deleted by first selecting them, and then clicking the delete button on the top right of the item.</description>
+                </property>
+                <property key="item_remove" type="expression" required="false" dataSource="item_data">
+                    <caption>Condition</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="editableUpdateGroup" type="boolean" required="true" defaultValue="false">
+                    <caption>Can change group?</caption>
+                    <description>If true, items can be dragged from one group to another.</description>
+                </property>
+                <property key="item_updateGroup" type="expression" required="false" dataSource="item_data">
+                    <caption>Condition</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="editableUpdateTime" type="boolean" required="true" defaultValue="false">
+                    <caption>Can move?</caption>
+                    <description>If true, items can be dragged to another moment in time.</description>
+                </property>
+                <property key="item_updateTime" type="expression" required="false" dataSource="item_data">
+                    <caption>Condition</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="editableOverrideItems" type="boolean" required="true" defaultValue="false">
+                    <caption>Override properties?</caption>
+                    <description>If true, item specific editable properties are overridden by timeline settings.</description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Groups">
+            <propertyGroup caption="General">
+                <property key="group_content" type="expression" required="false" dataSource="group_data">
+                    <caption>Content</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+                <property key="groupHeightMode" type="enumeration" defaultValue="auto">
+                    <caption>Height mode</caption>
+                    <description>Specifies how the height of a group is calculated.</description>
+                    <enumerationValues>
+                        <enumerationValue key="auto">Auto</enumerationValue>
+                        <enumerationValue key="fixed">Fixed</enumerationValue>
+                        <enumerationValue key="fitItems">Fit items</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="groupOrder" type="enumeration" defaultValue="order">
+                    <caption>Order field (ASC)</caption>
+                    <description></description>
+                    <enumerationValues>
+                        <enumerationValue key="order">Order</enumerationValue>
+                        <enumerationValue key="title">Title</enumerationValue>
+                        <enumerationValue key="id">ID</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="group_class" type="string" required="false">
+                    <caption>Class</caption>
+                    <description></description>
+                </property>
+                <property key="group_dynamicClass" type="expression" required="false" dataSource="item_data">
+                    <caption>Dynamic classes</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Events">
+            <property key="onAdd" type="action">
+                <caption>On add</caption>
+                <description></description>
+            </property>
+            <property key="onUpdate" type="action" dataSource="item_data">
+                <caption>On update</caption>
+                <description></description>
+            </property>
+            <property key="onMove" type="action" dataSource="item_data">
+                <caption>On move</caption>
+                <description></description>
+            </property>
+            <property key="onRemove" type="action" dataSource="item_data">
+                <caption>On remove</caption>
+                <description></description>
+            </property>
+        </propertyGroup>
+    </properties>
+</widget>
