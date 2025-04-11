@@ -1,4 +1,5 @@
 import { TimelineGanttPreviewProps } from "../typings/TimelineGanttProps";
+import { hidePropertiesIn } from "@mendix/pluggable-widgets-tools";
 
 export type Platform = "web" | "desktop";
 
@@ -109,6 +110,22 @@ export function getProperties(
         delete defaultProperties.properties.myOtherProperty;
     }
     */
+
+    if (!_values.zoomable) hidePropertiesIn(defaultProperties, _values, ["preferZoom", "zoomKey", "zoomFriction", "zoomMax", "zoomMax_unit", "zoomMin", "zoomMin_unit"]);
+    if (!_values.showTooltips) hidePropertiesIn(defaultProperties, _values, ["tooltipFollowMouse", "tooltipOverflowMethod", "tooltipDelay"]);
+    if (!_values.rollingModeFollow) hidePropertiesIn(defaultProperties, _values, ["rollingModeOffset"]);
+
+    if (!_values.selectable) hidePropertiesIn(defaultProperties, _values, ["item_selectable", "multiselect", "multiselectPerGroup"]);
+    else {
+        if (!_values.multiselect) hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup"]);
+    }
+
+    if (!_values.editableAdd) hidePropertiesIn(defaultProperties, _values, ["onAdd"]);
+    if (!_values.editableRemove) hidePropertiesIn(defaultProperties, _values, ["item_remove", "onRemove"]);
+    if (!_values.editableUpdateTime) hidePropertiesIn(defaultProperties, _values, ["item_updateTime", "item_startdateAttr", "item_enddateAttr", "onMove"])
+    if (!_values.editableUpdateGroup) hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "item_groupRef"]);
+
+    if (_values.editableOverrideItems) hidePropertiesIn(defaultProperties, _values, ["item_remove", "item_updateTime", "item_updateGroup"]);
 
     return defaultProperties;
 }

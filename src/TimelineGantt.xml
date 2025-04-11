@@ -24,7 +24,7 @@
                     <caption>Groups data source</caption>
                     <description>UNUSED! Needs to be the same type as Groups associtaion</description>
                 </property>
-                <systemProperty key="Editability"/>
+                <!-- <systemProperty key="Editability"/> -->
             </propertyGroup>
             <propertyGroup caption="General">
                 <property key="width" type="string" required="true" defaultValue="100%">
@@ -259,27 +259,13 @@
             </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Items">
-            <propertyGroup caption="General">
-                <property key="item_content" type="expression" required="true" dataSource="item_data">
-                    <caption>Content</caption>
-                    <description></description>
-                    <returnType type="String" />
-                </property>
-                <property key="item_title" type="expression" required="false" dataSource="item_data">
-                    <caption>Title</caption>
-                    <description></description>
-                    <returnType type="String" />
-                </property>
+            <propertyGroup caption="Data">
                 <property key="item_startdate" type="attribute" required="true" dataSource="item_data">
                     <caption>Start date</caption>
                     <description></description>
                     <attributeTypes>
                         <attributeType name="DateTime"/>
                     </attributeTypes>
-                </property>
-                <property key="item_startdateAttr" type="string" required="false">
-                    <caption>Start date attribute</caption>
-                    <description></description>
                 </property>
                 <property key="item_enddate" type="attribute" required="false" dataSource="item_data">
                     <caption>End date</caption>
@@ -288,16 +274,32 @@
                         <attributeType name="DateTime"/>
                     </attributeTypes>
                 </property>
-                <property key="item_enddateAttr" type="string" required="false">
-                    <caption>End date attribute</caption>
-                    <description></description>
-                </property>
-                
                 <property key="item_type" type="expression" required="false" dataSource="item_data">
                     <caption>Type</caption>
                     <description>Can be 'box', 'point', 'range', 'background' or empty (use default)</description>
                     <returnType type="String" />
                 </property>
+                <property key="item_content" type="expression" required="true" dataSource="item_data">
+                    <caption>Content</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+                <property key="item_align" type="expression" required="false" dataSource="item_data">
+                    <caption>Content alignment</caption>
+                    <description>Can be 'auto', 'center', 'left', or 'right'</description>
+                    <returnType type="String" />
+                </property>
+                <property key="item_title" type="expression" required="false" dataSource="item_data">
+                    <caption>Tooltip</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+                <property key="onUpdate" type="action" dataSource="item_data">
+                    <caption>On double-click</caption>
+                    <description></description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="General">               
                 <property key="type" type="enumeration" required="true" defaultValue="box">
                     <caption>Default type</caption>
                     <description></description>
@@ -307,11 +309,6 @@
                         <enumerationValue key="range">Range</enumerationValue>
                         <enumerationValue key="background">Background</enumerationValue>
                     </enumerationValues>
-                </property>
-                <property key="item_align" type="expression" required="false" dataSource="item_data">
-                    <caption>Alignment</caption>
-                    <description>Can be 'auto', 'center', 'left', or 'right'</description>
-                    <returnType type="String" />
                 </property>
                 <property key="align" type="enumeration" defaultValue="auto">
                     <caption>Default alignment</caption>
@@ -327,16 +324,32 @@
                     <caption>Stack?</caption>
                     <description></description>
                 </property>
-                <property key="stackSubgroups" type="boolean" required="true" defaultValue="true">
+                <property key="editableOverrideItems" type="boolean" required="true" defaultValue="false">
+                    <caption>Override editable properties?</caption>
+                    <description>If true, item specific editable properties are overridden by timeline settings.</description>
+                </property>
+                <!-- TODO: Sub-group functionality -->
+                <!-- <property key="stackSubgroups" type="boolean" required="true" defaultValue="true">
                     <caption>Stack subgroups?</caption>
                     <description></description>
+                </property> -->
+                <property key="item_class" type="string" required="false">
+                    <caption>Class</caption>
+                    <description></description>
                 </property>
+                <property key="item_dynamicClass" type="expression" required="false" dataSource="item_data">
+                    <caption>Dynamic classes</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Selectable">
                 <property key="selectable" type="boolean" required="true" defaultValue="true">
                     <caption>Selectable?</caption>
                     <description></description>
                 </property>
                 <property key="item_selectable" type="expression" required="false" dataSource="item_data">
-                    <caption>Item selectable?</caption>
+                    <caption>Condition</caption>
                     <description></description>
                     <returnType type="Boolean" />
                 </property>
@@ -348,21 +361,18 @@
                     <caption>Multiselect per group?</caption>
                     <description>If true, selecting multiple items using shift+click will only select items residing in the same group as the first selected item.</description>
                 </property>
-                <property key="item_class" type="string" required="false">
-                    <caption>Class</caption>
-                    <description></description>
-                </property>
-                <property key="item_dynamicClass" type="expression" required="false" dataSource="item_data">
-                    <caption>Dynamic classes</caption>
-                    <description></description>
-                    <returnType type="String" />
-                </property>
             </propertyGroup>
-            <propertyGroup caption="Editability">
+            <propertyGroup caption="Editable: Add">
                 <property key="editableAdd" type="boolean" required="true" defaultValue="false">
                     <caption>Can add?</caption>
                     <description>If true, new items can be created by double tapping an empty space in the Timeline.</description>
                 </property>
+                <property key="onAdd" type="action">
+                    <caption>On add</caption>
+                    <description></description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Editable: Remove">
                 <property key="editableRemove" type="boolean" required="true" defaultValue="false">
                     <caption>Can remove?</caption>
                     <description>If true, items can be deleted by first selecting them, and then clicking the delete button on the top right of the item.</description>
@@ -372,15 +382,12 @@
                     <description></description>
                     <returnType type="Boolean" />
                 </property>
-                <property key="editableUpdateGroup" type="boolean" required="true" defaultValue="false">
-                    <caption>Can change group?</caption>
-                    <description>If true, items can be dragged from one group to another.</description>
-                </property>
-                <property key="item_updateGroup" type="expression" required="false" dataSource="item_data">
-                    <caption>Condition</caption>
+                <property key="onRemove" type="action" dataSource="item_data">
+                    <caption>On remove</caption>
                     <description></description>
-                    <returnType type="Boolean" />
                 </property>
+            </propertyGroup>
+            <propertyGroup caption="Editable: Move">
                 <property key="editableUpdateTime" type="boolean" required="true" defaultValue="false">
                     <caption>Can move?</caption>
                     <description>If true, items can be dragged to another moment in time.</description>
@@ -390,19 +397,42 @@
                     <description></description>
                     <returnType type="Boolean" />
                 </property>
-                <property key="editableOverrideItems" type="boolean" required="true" defaultValue="false">
-                    <caption>Override properties?</caption>
-                    <description>If true, item specific editable properties are overridden by timeline settings.</description>
+                <property key="item_startdateAttr" type="string" required="false">
+                    <caption>Start date attribute name</caption>
+                    <description></description>
+                </property>
+                <property key="item_enddateAttr" type="string" required="false">
+                    <caption>End date attribute name</caption>
+                    <description>Item attribute name. IE: AttrName</description>
+                </property>
+                <property key="editableUpdateGroup" type="boolean" required="true" defaultValue="false">
+                    <caption>Can move group?</caption>
+                    <description>If true, items can be dragged from one group to another.</description>
+                </property>
+                <property key="item_updateGroup" type="expression" required="false" dataSource="item_data">
+                    <caption>Condition</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="item_groupRef" type="string" required="false">
+                    <caption>Group association name</caption>
+                    <description>Group association name. IE: MyFirstModule.Ent_RefEnt</description>
+                </property>
+                <property key="onMove" type="action" dataSource="item_data">
+                    <caption>On move</caption>
+                    <description></description>
                 </property>
             </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Groups">
-            <propertyGroup caption="General">
+            <propertyGroup caption="Data">
                 <property key="group_content" type="expression" required="false" dataSource="group_data">
                     <caption>Content</caption>
                     <description></description>
                     <returnType type="String" />
                 </property>
+            </propertyGroup>
+            <propertyGroup caption="General">
                 <property key="groupHeightMode" type="enumeration" defaultValue="auto">
                     <caption>Height mode</caption>
                     <description>Specifies how the height of a group is calculated.</description>
@@ -431,24 +461,6 @@
                     <returnType type="String" />
                 </property>
             </propertyGroup>
-        </propertyGroup>
-        <propertyGroup caption="Events">
-            <property key="onAdd" type="action">
-                <caption>On add</caption>
-                <description></description>
-            </property>
-            <property key="onUpdate" type="action" dataSource="item_data">
-                <caption>On update</caption>
-                <description></description>
-            </property>
-            <property key="onMove" type="action" dataSource="item_data">
-                <caption>On move</caption>
-                <description></description>
-            </property>
-            <property key="onRemove" type="action" dataSource="item_data">
-                <caption>On remove</caption>
-                <description></description>
-            </property>
         </propertyGroup>
     </properties>
 </widget>

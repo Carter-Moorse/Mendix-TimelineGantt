@@ -1,30 +1,8 @@
 import { TimelineGanttContainerProps, ZoomMax_unitEnum, ZoomMin_unitEnum } from "../../typings/TimelineGanttProps";
-import { DataItem, DataGroup, TimelineItem, TimelineOptions } from "vis-timeline/standalone";
-import { ObjectItem } from "mendix";
+import { WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions } from "./widget";
+
 import { useMemo } from "react";
-
 import classNames from "classnames";
-
-export type WidgetTimelineOptionsItemCallbackFunction = (item: WidgetTimelineItem, callback: (item: WidgetTimelineItem | null) => void) => void;
-
-interface WidgetTimelineItem extends TimelineItem {
-    obj?: ObjectItem
-}
-
-interface WidgetDataItem extends DataItem {
-    obj?: ObjectItem
-}
-
-interface WidgetDataGroup extends DataGroup {
-    obj?: ObjectItem
-}
-
-interface WidgetTimelineOptions extends TimelineOptions {
-    onAdd?: WidgetTimelineOptionsItemCallbackFunction
-    onUpdate?: WidgetTimelineOptionsItemCallbackFunction;
-    onMove?: WidgetTimelineOptionsItemCallbackFunction;
-    onRemove?: WidgetTimelineOptionsItemCallbackFunction;
-}
 
 // Not yet supported!
 // Widget MyFirstModule.Home_Web.timelineGantt1 is attempting to call "setValue". This operation is not yet supported on attributes linked to a datasource.
@@ -39,17 +17,14 @@ interface WidgetTimelineOptions extends TimelineOptions {
 // }
 
 // Work around
-function updateProperty(props: TimelineGanttContainerProps, item: WidgetTimelineItem) {
-    if (item.obj == undefined) return;
+function updateProperties(attributes?: {name?: string, value?: any}[], references?: {name?: string, guid: string | number}[], id?: string) {
+    if (id == undefined) return;
 
     mx.data.get({
-        guid: item.obj.id.toString(),
+        guid: id,
         callback: obj => {
-            console.log(obj);
-
-            obj.set(props.item_startdateAttr, item.start);
-            if (props.item_enddate) obj.set(props.item_enddateAttr, item.end);
-
+            attributes?.forEach(({ name, value }) => name && obj.set(name, value));
+            references?.forEach(({ name, guid }) => name && obj.addReference(name, guid));
             mx.data.commit({
                 mxobj: obj,
                 callback: () => { }
@@ -58,7 +33,7 @@ function updateProperty(props: TimelineGanttContainerProps, item: WidgetTimeline
     });
 }
 
-function calcTime(unit: ZoomMax_unitEnum | ZoomMin_unitEnum, value: number ) {
+function calcTime(unit: ZoomMax_unitEnum | ZoomMin_unitEnum, value: number) {
     switch (unit) {
         case "day":
             return (((value * 1000) * 60) * 60) * 24
@@ -135,7 +110,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                     props.item_selectable?.get(obj).value,
                     classNames(props.class, props.item_dynamicClass?.get(obj).value),
                     props.item_remove?.get(obj).value,
-                    !startAttr.readOnly && !endAttr?.readOnly && props.item_updateTime?.get(obj).value,
+                    props.item_updateTime?.get(obj).value, // !startAttr.readOnly && !endAttr?.readOnly
                     props.item_updateGroup?.get(obj).value,
                     props.item_group?.get(obj).value?.id.toString()
                 ]
@@ -182,9 +157,12 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         maxHeight: props.maxHeight || undefined,
         minHeight: props.minHeight || undefined,
         horizontalScroll: props.horizontalScroll,
+        // TODO: Always draggable
         //   itemsAlwaysDraggable: props.itemsAlwaysDraggable,
+        // TODO: Locale
         //   locale: props.locale,
         //   locales: props.locales,
+        // TODO: Long select press time
         //   longSelectPressTime: props.longSelectPressTime,
         margin: {
             axis: props.marginAxis,
@@ -215,7 +193,8 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         showWeekScale: props.showWeekScale,
         showTooltips: props.showTooltips,
         stack: props.stack,
-        stackSubgroups: props.stackSubgroups,
+        // TODO: Sub-group functionality
+        // stackSubgroups: props.stackSubgroups,
         start: props.start?.value,
         timeAxis: props.timeAxisScale === "auto" ? undefined : {
             scale: props.timeAxisScale,
@@ -238,14 +217,12 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             callback(item);
         },
         onUpdate: function (item, callback) {
-            console.log("Update");
-
             if (item.obj == undefined) {
                 callback(null);
                 return;
             }
-
-            props.onUpdate?.get(item.obj).execute();
+            const action = props.onUpdate?.get(item.obj)
+            if (action?.canExecute) action.execute();
             callback(item);
         },
         onMove: function (item, callback) {
@@ -254,7 +231,16 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                 return;
             }
 
-            updateProperty(props, item);
+            updateProperties(
+                [
+                    {name: props.item_startdateAttr, value: item.start},
+                    {name: props.item_enddateAttr, value: item.end}
+                ], 
+                [
+                    {name: props.item_groupRef, guid: item.group || ""}
+                ], 
+                item.obj.id.toString()
+            );
 
             const action = props.onMove?.get(item.obj);
             if (action?.canExecute) action.execute();
@@ -262,13 +248,13 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         },
         onRemove: function (item, callback) {
             if (item.obj == undefined) {
-                callback(null);
+                callback(item);
                 return;
             }
 
             const action = props.onRemove?.get(item.obj);
             if (action?.canExecute) action.execute();
-            callback(item);
+            callback(null);
         }
     }
 
