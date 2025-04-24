@@ -13,6 +13,7 @@ export interface WidgetDataItem extends DataItem {
 
 export interface WidgetDataGroup extends DataGroup {
     obj?: ObjectItem
+    order: number;
 }
 
 export interface WidgetTimelineOptions extends TimelineOptions {
