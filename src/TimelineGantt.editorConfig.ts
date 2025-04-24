@@ -115,6 +115,8 @@ export function getProperties(
     if (!_values.showTooltips) hidePropertiesIn(defaultProperties, _values, ["tooltipFollowMouse", "tooltipOverflowMethod", "tooltipDelay"]);
     if (!_values.rollingModeFollow) hidePropertiesIn(defaultProperties, _values, ["rollingModeOffset"]);
 
+    if(_values.zoomable && _values.zoomKey === "none") hidePropertiesIn(defaultProperties, _values, ["horizontalScroll"])
+
     if (!_values.selectable) hidePropertiesIn(defaultProperties, _values, ["item_selectable", "multiselect", "multiselectPerGroup"]);
     else {
         if (!_values.multiselect) hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup"]);
@@ -126,6 +128,8 @@ export function getProperties(
     if (!_values.editableUpdateGroup) hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "item_groupRef"]);
 
     if (_values.editableOverrideItems) hidePropertiesIn(defaultProperties, _values, ["item_remove", "item_updateTime", "item_updateGroup"]);
+
+    if(!_values.group_data) hidePropertiesIn(defaultProperties, _values, ["group_content", "group_title", "groupHeightMode", "groupOrder", "group_class", "group_dynamicClass"]);
 
     return defaultProperties;
 }

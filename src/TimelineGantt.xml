@@ -43,26 +43,6 @@
                     <caption>Max height</caption>
                     <description></description>
                 </property>
-                <property key="start" type="expression" required="false">
-                    <caption>Start date</caption>
-                    <description></description>
-                    <returnType type="DateTime" />
-                </property>
-                <property key="end" type="expression" required="false">
-                    <caption>End date</caption>
-                    <description>The initial date for the axis of the timeline.</description>
-                    <returnType type="DateTime" />
-                </property>
-                <property key="min" type="expression" required="false">
-                    <caption>Min date</caption>
-                    <description></description>
-                    <returnType type="DateTime" />
-                </property>
-                <property key="max" type="expression" required="false">
-                    <caption>Max date</caption>
-                    <description>Constrained date of the timeline.</description>
-                    <returnType type="DateTime" />
-                </property>
                 <!-- hiddenDates -->
                 <property key="autoResize" type="boolean" required="true" defaultValue="true">
                     <caption>Auto resize?</caption>
@@ -72,27 +52,15 @@
                     <caption>Click to use?</caption>
                     <description></description>
                 </property>
-                <property key="horizontalScroll" type="boolean" required="true" defaultValue="false">
-                    <caption>Horizontal scroll?</caption>
-                    <description></description>
-                </property>
-                <property key="verticalScroll" type="boolean" required="true" defaultValue="false">
-                    <caption>Vertical scroll?</caption>
-                    <description></description>
-                </property>
                 <!-- locale -->
                 <!-- longSelectPressTime -->
-                <property key="moveable" type="boolean" required="true" defaultValue="false">
-                    <caption>Moveable?</caption>
-                    <description>Specifies whether the Timeline can be moved and zoomed by dragging the window.</description>
-                </property>
                 <property key="rtl" type="boolean" required="true" defaultValue="false">
                     <caption>Right-to-left?</caption>
                     <description></description>
                 </property>
                 <!-- sequentialSelection -->
                 <property key="showCurrentTime" type="boolean" required="true" defaultValue="true">
-                    <caption>Show current time?</caption>
+                    <caption>Show current time marker?</caption>
                     <description></description>
                 </property>
                 <property key="showMajorLabels" type="boolean" required="true" defaultValue="true">
@@ -108,7 +76,31 @@
                     <description></description>
                 </property>
             </propertyGroup>
-            <propertyGroup caption="Zoom">
+            <propertyGroup caption="View">
+                <property key="start" type="expression" required="false">
+                    <caption>Initial start date</caption>
+                    <description></description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="end" type="expression" required="false">
+                    <caption>Initial end date</caption>
+                    <description>The initial date for the axis of the timeline.</description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="min" type="expression" required="false">
+                    <caption>Min date</caption>
+                    <description></description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="max" type="expression" required="false">
+                    <caption>Max date</caption>
+                    <description>Constrained date of the timeline.</description>
+                    <returnType type="DateTime" />
+                </property>
+                <property key="moveable" type="boolean" required="true" defaultValue="false">
+                    <caption>Moveable?</caption>
+                    <description>Specifies whether the Timeline can be moved and zoomed by dragging the window.</description>
+                </property>
                 <property key="zoomable" type="boolean" required="true" defaultValue="true">
                     <caption>Zoomable?</caption>
                     <description></description>
@@ -165,6 +157,14 @@
                         <enumerationValue key="month">Month</enumerationValue>
                         <enumerationValue key="year">Year</enumerationValue>
                     </enumerationValues>
+                </property>
+                <property key="horizontalScroll" type="boolean" required="true" defaultValue="false">
+                    <caption>Horizontal scroll?</caption>
+                    <description></description>
+                </property>
+                <property key="verticalScroll" type="boolean" required="true" defaultValue="false">
+                    <caption>Vertical scroll?</caption>
+                    <description></description>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Tooltip">
@@ -431,6 +431,11 @@
                     <description></description>
                     <returnType type="String" />
                 </property>
+                <property key="group_title" type="expression" required="false" dataSource="group_data">
+                    <caption>Title</caption>
+                    <description></description>
+                    <returnType type="String" />
+                </property>
             </propertyGroup>
             <propertyGroup caption="General">
                 <property key="groupHeightMode" type="enumeration" defaultValue="auto">
@@ -455,7 +460,7 @@
                     <caption>Class</caption>
                     <description></description>
                 </property>
-                <property key="group_dynamicClass" type="expression" required="false" dataSource="item_data">
+                <property key="group_dynamicClass" type="expression" required="false" dataSource="group_data">
                     <caption>Dynamic classes</caption>
                     <description></description>
                     <returnType type="String" />
