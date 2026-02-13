@@ -20,7 +20,7 @@ export function TimelineView({ options, items, groups, className, style }: Timel
     useEffect(() => {
         timeline.current = wrapper.current ? new Timeline(wrapper.current, data.current, options) : null;
         return () => timeline.current?.destroy();
-    }, []);
+    }, [wrapper]);
 
     useEffect(() => timeline.current?.setOptions(options), [options]);
     useEffect(() => {
