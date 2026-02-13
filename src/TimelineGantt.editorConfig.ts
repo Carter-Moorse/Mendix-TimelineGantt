@@ -129,7 +129,7 @@ export function getProperties(
 
     if (_values.editableOverrideItems) hidePropertiesIn(defaultProperties, _values, ["item_remove", "item_updateTime", "item_updateGroup"]);
 
-    if(!_values.group_data) hidePropertiesIn(defaultProperties, _values, ["group_content", "group_title", "groupHeightMode", "groupOrder", "group_class", "group_dynamicClass"]);
+    if(!_values.group_data) hidePropertiesIn(defaultProperties, _values, ["group_content", "group_title", "groupHeightMode", "groupOrder", "group_class", "group_dynamicClass", "editableUpdateGroup", "item_updateGroup", "item_groupRef"]);
 
     return defaultProperties;
 }
