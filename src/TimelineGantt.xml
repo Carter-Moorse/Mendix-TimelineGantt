@@ -285,7 +285,7 @@
                 </property>
                 <property key="item_content" type="expression" required="true" dataSource="item_data">
                     <caption>Content</caption>
-                    <description></description>
+                    <description>Supports HTML markup</description>
                     <returnType type="String" />
                 </property>
                 <property key="item_align" type="expression" required="false" dataSource="item_data">
@@ -295,7 +295,7 @@
                 </property>
                 <property key="item_title" type="expression" required="false" dataSource="item_data">
                     <caption>Tooltip</caption>
-                    <description></description>
+                    <description>Supports HTML markup</description>
                     <returnType type="String" />
                 </property>
                 <property key="onUpdate" type="action" dataSource="item_data">
@@ -432,7 +432,7 @@
             <propertyGroup caption="Data">
                 <property key="group_content" type="expression" required="false" dataSource="group_data">
                     <caption>Content</caption>
-                    <description></description>
+                    <description>Supports HTML markup</description>
                     <returnType type="String" />
                 </property>
                 <property key="group_title" type="expression" required="false" dataSource="group_data">
