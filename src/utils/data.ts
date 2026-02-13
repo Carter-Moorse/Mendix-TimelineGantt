@@ -73,6 +73,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
     if (!props.group_useData) props.group_data?.setLimit(0);
 
     const objs = props.group_useData ? props.group_data!.items : props.item_data.items;
+
     const groups = useMemo(() => {
         return objs?.reduce<WidgetDataGroup[]>((prev, obj, index) => {
             const groupObj = props.group_useData ? obj : props.item_group?.get(obj).value;
@@ -95,20 +96,20 @@ export default function useOptions(props: TimelineGanttContainerProps) {
 
     const items = useMemo(() => {
         return props.item_data.items?.flatMap<WidgetDataItem>((obj, index) => {
-            const start = props.item_startdate.get(obj).value;
-            const end = props.item_enddate?.get(obj).value;
-            const content = props.item_content.get(obj).value;
+            const start = props.item_startdate.get(obj);
+            const end = props.item_enddate?.get(obj);
+            const content = props.item_content.get(obj);
 
-            if (content == undefined || start == undefined) return [];
+            if (content.value == undefined || start.value == undefined) return [];
 
             return {
                 obj,
                 id: obj.id.toString(),
-                content,
+                content: content.value,
                 title: props.item_title?.get(obj).value,
                 type: props.item_type?.get(obj).value,
-                start,
-                end,
+                start: start.value,
+                end: end?.value,
                 align: props.item_align?.get(obj).value,
                 selectable: props.item_selectable?.get(obj).value,
                 className: classNames(props.item_class, props.item_dynamicClass?.get(obj).value),
@@ -121,7 +122,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                 order: index
             };
         });
-    }, [props.item_data]);
+    }, [props.item_data, props.group_data]);
 
     const options: WidgetTimelineOptions = useMemo(() => {
         return {
