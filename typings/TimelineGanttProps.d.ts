@@ -4,7 +4,7 @@
  * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
-import { ActionValue, DynamicValue, ListValue, ListActionValue, ListAttributeValue, ListExpressionValue, ListReferenceValue } from "mendix";
+import { DynamicValue, ListValue, ListActionValue, ListAttributeValue, ListExpressionValue, ListReferenceValue } from "mendix";
 import { Big } from "big.js";
 
 export type ZoomKeyEnum = "none" | "altKey" | "ctrlKey" | "shiftKey" | "metaKey";
@@ -36,6 +36,7 @@ export interface TimelineGanttContainerProps {
     tabIndex?: number;
     item_data: ListValue;
     item_group?: ListReferenceValue;
+    group_useData: boolean;
     group_data?: ListValue;
     width: string;
     height: string;
@@ -94,7 +95,7 @@ export interface TimelineGanttContainerProps {
     multiselect: boolean;
     multiselectPerGroup: boolean;
     editableAdd: boolean;
-    onAdd?: ActionValue;
+    item_entity: string;
     editableRemove: boolean;
     item_remove?: ListExpressionValue<boolean>;
     onRemove?: ListActionValue;
@@ -127,6 +128,7 @@ export interface TimelineGanttPreviewProps {
     translate: (text: string) => string;
     item_data: {} | { caption: string } | { type: string } | null;
     item_group: string;
+    group_useData: boolean;
     group_data: {} | { caption: string } | { type: string } | null;
     width: string;
     height: string;
@@ -185,7 +187,7 @@ export interface TimelineGanttPreviewProps {
     multiselect: boolean;
     multiselectPerGroup: boolean;
     editableAdd: boolean;
-    onAdd: {} | null;
+    item_entity: string;
     editableRemove: boolean;
     item_remove: string;
     onRemove: {} | null;

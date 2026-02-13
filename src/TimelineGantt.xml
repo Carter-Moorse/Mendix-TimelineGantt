@@ -20,9 +20,13 @@
                         <associationType name="Reference"/>
                     </associationTypes>
                 </property>
+                <property key="group_useData" type="boolean" required="true" defaultValue="false">
+                    <caption>Use data source for group?</caption>
+                    <description>If Yes, Groups data source will be used to retrieve and display groups. If No, Groups association will be used</description>
+                </property>
                 <property key="group_data" type="datasource" isList="true" required="false">
                     <caption>Groups data source</caption>
-                    <description>UNUSED! Needs to be the same type as Groups associtaion</description>
+                    <description></description>
                 </property>
                 <!-- <systemProperty key="Editability"/> -->
             </propertyGroup>
@@ -367,9 +371,9 @@
                     <caption>Can add?</caption>
                     <description>If true, new items can be created by double tapping an empty space in the Timeline.</description>
                 </property>
-                <property key="onAdd" type="action">
-                    <caption>On add</caption>
-                    <description></description>
+                <property key="item_entity" type="string" required="false">
+                    <caption>Item entity name</caption>
+                    <description>Item complete entity name in Mendix. IE: MyFirstModule.EntityName</description>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Editable: Remove">
@@ -382,7 +386,7 @@
                     <description></description>
                     <returnType type="Boolean" />
                 </property>
-                <property key="onRemove" type="action" dataSource="item_data">
+                <property key="onRemove" type="action" required="false" dataSource="item_data">
                     <caption>On remove</caption>
                     <description></description>
                 </property>
@@ -398,12 +402,12 @@
                     <returnType type="Boolean" />
                 </property>
                 <property key="item_startdateAttr" type="string" required="false">
-                    <caption>Start date attribute name</caption>
-                    <description></description>
+                    <caption>Start date attribute</caption>
+                    <description>Attribute name in Mendix</description>
                 </property>
                 <property key="item_enddateAttr" type="string" required="false">
-                    <caption>End date attribute name</caption>
-                    <description>Item attribute name. IE: AttrName</description>
+                    <caption>End date attribute</caption>
+                    <description>Attribute name in Mendix</description>
                 </property>
                 <property key="editableUpdateGroup" type="boolean" required="true" defaultValue="false">
                     <caption>Can move group?</caption>
@@ -415,10 +419,10 @@
                     <returnType type="Boolean" />
                 </property>
                 <property key="item_groupRef" type="string" required="false">
-                    <caption>Group association name</caption>
-                    <description>Group association name. IE: MyFirstModule.Ent_RefEnt</description>
+                    <caption>Group association</caption>
+                    <description>Complete group association name in Mendix. IE: MyFirstModule.Entity_RefEntity</description>
                 </property>
-                <property key="onMove" type="action" dataSource="item_data">
+                <property key="onMove" type="action" required="false" dataSource="item_data">
                     <caption>On move</caption>
                     <description></description>
                 </property>

@@ -122,7 +122,7 @@ export function getProperties(
         if (!_values.multiselect) hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup"]);
     }
 
-    if (!_values.editableAdd) hidePropertiesIn(defaultProperties, _values, ["onAdd"]);
+    if (!_values.editableAdd) hidePropertiesIn(defaultProperties, _values, ["item_entity"]);
     if (!_values.editableRemove) hidePropertiesIn(defaultProperties, _values, ["item_remove", "onRemove"]);
     if (!_values.editableUpdateTime) hidePropertiesIn(defaultProperties, _values, ["item_updateTime", "item_startdateAttr", "item_enddateAttr", "onMove"])
     if (!_values.editableUpdateGroup) hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "item_groupRef"]);
@@ -147,6 +147,11 @@ export function check(_values: TimelineGanttPreviewProps): Problem[] {
     }
     */
 
+    if(_values.group_useData && _values.group_data == null) errors.push({
+        property: "group_data",
+        message: "Group data is required when using data source for group retrieval"
+    });
+    
     return errors;
 }
 

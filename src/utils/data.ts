@@ -4,19 +4,22 @@ import { WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions } from "./widget
 import { useMemo } from "react";
 import classNames from "classnames";
 
-// Not yet supported!
-// Widget MyFirstModule.Home_Web.timelineGantt1 is attempting to call "setValue". This operation is not yet supported on attributes linked to a datasource.
-// function updateProperty({ item_startdate, item_enddate }: TimelineGanttContainerProps, { start, end, obj }: WidgetTimelineItem) {    
-//     if (obj == undefined) return;
+// MX pluggable widget feature not yet supported!
+// Message - Widget MyFirstModule.Home_Web.timelineGantt1 is attempting to call "setValue". This operation is not yet supported on attributes linked to a datasource.
+// https://docs.mendix.com/apidocs-mxsdk/apidocs/pluggable-widgets-client-apis-list-values/#obtaining-attribute-value
+/*
+function updateProperty({ item_startdate, item_enddate }: TimelineGanttContainerProps, { start, end, obj }: WidgetTimelineItem) {    
+    if (obj == undefined) return;
 
-//     if (start instanceof Date) item_startdate.get(obj).setValue(start);
-//     else item_startdate.get(obj).setTextValue(String(start));
+    if (start instanceof Date) item_startdate.get(obj).setValue(start);
+    else item_startdate.get(obj).setTextValue(String(start));
 
-//     if (end instanceof Date) item_enddate?.get(obj).setValue(end);
-//     else item_enddate?.get(obj).setTextValue(String(end));
-// }
+    if (end instanceof Date) item_enddate?.get(obj).setValue(end);
+    else item_enddate?.get(obj).setTextValue(String(end));
+}
+*/
 
-// Work around
+// Work around for updating property on ListAttributeValue using MX client
 function updateProperties(attributes?: { name?: string, value?: any }[], references?: { name?: string, guid: string | number }[], id?: string) {
     if (id == undefined) return;
 
@@ -31,6 +34,20 @@ function updateProperties(attributes?: { name?: string, value?: any }[], referen
             });
         }
     });
+}
+// Work around for creating new MX object in versions < 9 using MX client
+function createObject(entity: string): Promise<mendix.lib.MxObject> {
+    return new Promise((resolve, reject) => {
+        mx.data.create({
+            entity: entity,
+            callback: function(obj) {
+                resolve(obj);
+            },
+            error: function(err) {
+                reject(err);
+            }
+        });
+    })
 }
 
 function calcTime(unit: ZoomMax_unitEnum | ZoomMin_unitEnum, value: number) {
@@ -53,14 +70,15 @@ function calcTime(unit: ZoomMax_unitEnum | ZoomMin_unitEnum, value: number) {
 }
 
 export default function useOptions(props: TimelineGanttContainerProps) {
-    props.group_data?.setLimit(0);
+    if (!props.group_useData) props.group_data?.setLimit(0);
 
+    const objs = props.group_useData ? props.group_data!.items : props.item_data.items;
     const groups = useMemo(() => {
-        return props.item_data.items?.reduce<WidgetDataGroup[]>((prev, obj, index) => {
-            const groupObj = props.item_group?.get(obj).value;
+        return objs?.reduce<WidgetDataGroup[]>((prev, obj, index) => {
+            const groupObj = props.group_useData ? obj : props.item_group?.get(obj).value;
 
             if (!groupObj) return prev;
-            if (prev.findIndex(val => val.id === groupObj.id.toString()) !== -1) return prev;
+            if (!props.group_useData && prev.findIndex(val => val.id === groupObj.id.toString()) !== -1) return prev;
 
             prev.push({
                 obj: groupObj,
@@ -73,7 +91,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
 
             return prev;
         }, [])
-    }, [props.item_data]);
+    }, [props.item_data, props.group_data]);
 
     const items = useMemo(() => {
         return props.item_data.items?.flatMap<WidgetDataItem>((obj, index) => {
@@ -182,8 +200,15 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             zoomMax: calcTime(props.zoomMax_unit, props.zoomMax),
             zoomMin: calcTime(props.zoomMin_unit, props.zoomMin),
             onAdd: function (item, callback) {
-                if (props.onAdd?.canExecute) props.onAdd.execute();
-                callback(item);
+                createObject(props.item_entity)
+                    .then((obj) => {
+                        if (props.item_startdateAttr) obj.set(props.item_startdateAttr, item.start);
+                        if (props.item_enddateAttr) obj.set(props.item_enddateAttr, item.end);
+                        if (props.item_groupRef && item.group) obj.addReference(props.item_groupRef, item.group);
+                        mx.data.commit({mxobj: obj, callback: () => {}});
+                    });
+                
+                callback(null);
             },
             onUpdate: function (item, callback) {
                 if (item.obj == undefined) {
