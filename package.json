@@ -1,8 +1,8 @@
 {
   "name": "timelinegantt",
   "widgetName": "TimelineGantt",
-  "version": "1.0.0",
-  "description": "My widget description",
+  "version": "2.0.0",
+  "description": "Display a timeline gantt chart in your Mendix app using vis-timeline library.",
   "copyright": "© Mendix Technology BV 2022. All rights reserved.",
   "author": "Carter Moorse",
   "engines": {
