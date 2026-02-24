@@ -298,10 +298,6 @@
                     <description>Supports HTML markup</description>
                     <returnType type="String" />
                 </property>
-                <property key="onUpdate" type="action" dataSource="item_data">
-                    <caption>On double-click</caption>
-                    <description></description>
-                </property>
             </propertyGroup>
             <propertyGroup caption="General">               
                 <property key="type" type="enumeration" required="true" defaultValue="box">
@@ -356,6 +352,10 @@
                     <caption>Condition</caption>
                     <description></description>
                     <returnType type="Boolean" />
+                </property>
+                <property key="onUpdate" type="action" dataSource="item_data">
+                    <caption>On double-click</caption>
+                    <description></description>
                 </property>
                 <property key="multiselect" type="boolean" required="true" defaultValue="false">
                     <caption>Multiselect?</caption>

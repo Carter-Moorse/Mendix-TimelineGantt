@@ -20,8 +20,14 @@ function updateProperty({ item_startdate, item_enddate }: TimelineGanttContainer
 */
 
 // Work around for updating property on ListAttributeValue using MX client
-function updateProperties(attributes?: { name?: string, value?: any }[], references?: { name?: string, guid: string | number }[], id?: string) {
-    if (id == undefined) return;
+function updateProperties(
+    attributes?: Array<{ name?: string; value?: any }>,
+    references?: Array<{ name?: string; guid: string | number }>,
+    id?: string
+) {
+    if (id === undefined) {
+        return;
+    }
 
     mx.data.get({
         guid: id,
@@ -30,7 +36,7 @@ function updateProperties(attributes?: { name?: string, value?: any }[], referen
             references?.forEach(({ name, guid }) => name && obj.addReference(name, guid));
             mx.data.commit({
                 mxobj: obj,
-                callback: () => { }
+                callback: () => console.trace("Committed object: " + obj.getGuid())
             });
         }
     });
@@ -39,38 +45,40 @@ function updateProperties(attributes?: { name?: string, value?: any }[], referen
 function createObject(entity: string): Promise<mendix.lib.MxObject> {
     return new Promise((resolve, reject) => {
         mx.data.create({
-            entity: entity,
-            callback: function(obj) {
+            entity,
+            callback(obj) {
                 resolve(obj);
             },
-            error: function(err) {
+            error(err) {
                 reject(err);
             }
         });
-    })
+    });
 }
 
 function calcTime(unit: ZoomMax_unitEnum | ZoomMin_unitEnum, value: number) {
     switch (unit) {
         case "day":
-            return (((value * 1000) * 60) * 60) * 24
+            return value * 1000 * 60 * 60 * 24;
         case "hour":
-            return ((value * 1000) * 60) * 60
+            return value * 1000 * 60 * 60;
         case "minute":
-            return (value * 1000) * 60;
+            return value * 1000 * 60;
         case "month":
-            return ((((value * 1000) * 60) * 60) * 24) * 30
+            return value * 1000 * 60 * 60 * 24 * 30;
         case "second":
-            return (value * 1000);
+            return value * 1000;
         case "week":
-            return ((((value * 1000) * 60) * 60) * 24) * 7
+            return value * 1000 * 60 * 60 * 24 * 7;
         case "year":
-            return ((((value * 1000) * 60) * 60) * 24) * 365
+            return value * 1000 * 60 * 60 * 24 * 365;
     }
 }
 
 export default function useOptions(props: TimelineGanttContainerProps) {
-    if (!props.group_useData) props.group_data?.setLimit(0);
+    if (!props.group_useData) {
+        props.group_data?.setLimit(0);
+    }
 
     const objs = props.group_useData ? props.group_data!.items : props.item_data.items;
 
@@ -78,8 +86,12 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         return objs?.reduce<WidgetDataGroup[]>((prev, obj, index) => {
             const groupObj = props.group_useData ? obj : props.item_group?.get(obj).value;
 
-            if (!groupObj) return prev;
-            if (!props.group_useData && prev.findIndex(val => val.id === groupObj.id.toString()) !== -1) return prev;
+            if (!groupObj) {
+                return prev;
+            }
+            if (!props.group_useData && prev.findIndex(val => val.id === groupObj.id.toString()) !== -1) {
+                return prev;
+            }
 
             prev.push({
                 obj: groupObj,
@@ -91,7 +103,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             });
 
             return prev;
-        }, [])
+        }, []);
     }, [props.item_data, props.group_data]);
 
     const items = useMemo(() => {
@@ -100,7 +112,9 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             const end = props.item_enddate?.get(obj);
             const content = props.item_content.get(obj);
 
-            if (content.value == undefined || start.value == undefined) return [];
+            if (content.value === undefined || start.value === undefined) {
+                return [];
+            }
 
             return {
                 obj,
@@ -184,10 +198,13 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             // TODO: Sub-group functionality
             // stackSubgroups: props.stackSubgroups,
             start: props.start?.value,
-            timeAxis: props.timeAxisScale === "auto" ? undefined : {
-                scale: props.timeAxisScale,
-                step: props.timeAxisStep
-            },
+            timeAxis:
+                props.timeAxisScale === "auto"
+                    ? undefined
+                    : {
+                          scale: props.timeAxisScale,
+                          step: props.timeAxisStep
+                      },
             type: props.type,
             tooltip: {
                 delay: props.tooltipDelay,
@@ -200,28 +217,35 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             zoomFriction: props.zoomFriction,
             zoomMax: calcTime(props.zoomMax_unit, props.zoomMax),
             zoomMin: calcTime(props.zoomMin_unit, props.zoomMin),
-            onAdd: function (item, callback) {
-                createObject(props.item_entity)
-                    .then((obj) => {
-                        if (props.item_startdateAttr) obj.set(props.item_startdateAttr, item.start);
-                        if (props.item_enddateAttr) obj.set(props.item_enddateAttr, item.end);
-                        if (props.item_groupRef && item.group) obj.addReference(props.item_groupRef, item.group);
-                        mx.data.commit({mxobj: obj, callback: () => {}});
-                    });
-                
+            onAdd(item, callback) {
+                createObject(props.item_entity).then(obj => {
+                    if (props.item_startdateAttr) {
+                        obj.set(props.item_startdateAttr, item.start);
+                    }
+                    if (props.item_enddateAttr) {
+                        obj.set(props.item_enddateAttr, item.end);
+                    }
+                    if (props.item_groupRef && item.group) {
+                        obj.addReference(props.item_groupRef, item.group);
+                    }
+                    mx.data.commit({ mxobj: obj, callback: () => console.trace("Committed object: " + obj.getGuid()) });
+                });
+
                 callback(null);
             },
-            onUpdate: function (item, callback) {
-                if (item.obj == undefined) {
+            onUpdate(item, callback) {
+                if (item.obj === undefined) {
                     callback(null);
                     return;
                 }
-                const action = props.onUpdate?.get(item.obj)
-                if (action?.canExecute) action.execute();
+                const action = props.onUpdate?.get(item.obj);
+                if (action?.canExecute) {
+                    action.execute();
+                }
                 callback(item);
             },
-            onMove: function (item, callback) {
-                if (item.obj == undefined) {
+            onMove(item, callback) {
+                if (item.obj === undefined) {
                     callback(null);
                     return;
                 }
@@ -231,28 +255,30 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                         { name: props.item_startdateAttr, value: item.start },
                         { name: props.item_enddateAttr, value: item.end }
                     ],
-                    [
-                        { name: props.item_groupRef, guid: item.group || "" }
-                    ],
+                    [{ name: props.item_groupRef, guid: item.group || "" }],
                     item.obj.id.toString()
                 );
 
                 const action = props.onMove?.get(item.obj);
-                if (action?.canExecute) action.execute();
+                if (action?.canExecute) {
+                    action.execute();
+                }
                 callback(item);
             },
-            onRemove: function (item, callback) {
-                if (item.obj == undefined) {
+            onRemove(item, callback) {
+                if (item.obj === undefined) {
                     callback(item);
                     return;
                 }
 
                 const action = props.onRemove?.get(item.obj);
-                if (action?.canExecute) action.execute();
+                if (action?.canExecute) {
+                    action.execute();
+                }
                 callback(null);
             }
-        }
+        };
     }, [props.start, props.end, props.min, props.max]);
 
-    return { options, items, groups }
+    return { options, items, groups };
 }

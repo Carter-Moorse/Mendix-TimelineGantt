@@ -1,25 +1,28 @@
 import { DataItem, DataGroup, TimelineItem, TimelineOptions } from "vis-timeline/standalone";
 import { ObjectItem } from "mendix";
 
-export type WidgetTimelineOptionsItemCallbackFunction = (item: WidgetTimelineItem, callback: (item: WidgetTimelineItem | null) => void) => void;
+export type WidgetTimelineOptionsItemCallbackFunction = (
+    item: WidgetTimelineItem,
+    callback: (item: WidgetTimelineItem | null) => void
+) => void;
 
 export interface WidgetTimelineItem extends TimelineItem {
-    obj?: ObjectItem
+    obj?: ObjectItem;
 }
 
 export interface WidgetDataItem extends DataItem {
-    obj?: ObjectItem
+    obj?: ObjectItem;
 }
 
 export interface WidgetDataGroup extends DataGroup {
-    obj?: ObjectItem
+    obj?: ObjectItem;
     order: number;
 }
 
 export interface WidgetTimelineOptions extends TimelineOptions {
-    onAdd?: WidgetTimelineOptionsItemCallbackFunction
+    onAdd?: WidgetTimelineOptionsItemCallbackFunction;
     onUpdate?: WidgetTimelineOptionsItemCallbackFunction;
     onMove?: WidgetTimelineOptionsItemCallbackFunction;
-    onMoveGroup?: WidgetTimelineOptionsItemCallbackFunction
+    onMoveGroup?: WidgetTimelineOptionsItemCallbackFunction;
     onRemove?: WidgetTimelineOptionsItemCallbackFunction;
 }

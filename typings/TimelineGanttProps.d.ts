@@ -83,7 +83,6 @@ export interface TimelineGanttContainerProps {
     item_content: ListExpressionValue<string>;
     item_align?: ListExpressionValue<string>;
     item_title?: ListExpressionValue<string>;
-    onUpdate?: ListActionValue;
     type: TypeEnum;
     align: AlignEnum;
     stack: boolean;
@@ -92,6 +91,7 @@ export interface TimelineGanttContainerProps {
     item_dynamicClass?: ListExpressionValue<string>;
     selectable: boolean;
     item_selectable?: ListExpressionValue<boolean>;
+    onUpdate?: ListActionValue;
     multiselect: boolean;
     multiselectPerGroup: boolean;
     editableAdd: boolean;
@@ -175,7 +175,6 @@ export interface TimelineGanttPreviewProps {
     item_content: string;
     item_align: string;
     item_title: string;
-    onUpdate: {} | null;
     type: TypeEnum;
     align: AlignEnum;
     stack: boolean;
@@ -184,6 +183,7 @@ export interface TimelineGanttPreviewProps {
     item_dynamicClass: string;
     selectable: boolean;
     item_selectable: string;
+    onUpdate: {} | null;
     multiselect: boolean;
     multiselectPerGroup: boolean;
     editableAdd: boolean;

@@ -28,7 +28,7 @@ export function TimelineView({ options, items, groups, className, style }: Timel
         const newIds = items.map(i => i.id);
         data.current.update(items);
         data.current.remove(currentIds.filter(id => !newIds.includes(id)));
-    }, [items])
+    }, [items]);
     useEffect(() => {
         if (groups?.length) {
             timeline.current?.setGroups(group.current);
@@ -37,13 +37,10 @@ export function TimelineView({ options, items, groups, className, style }: Timel
             const newIds = groups.map(i => i.id);
             group.current.update(groups);
             group.current.remove(currentIds.filter(id => !newIds.includes(id)));
+        } else {
+            timeline.current?.setGroups(undefined);
         }
-        else timeline.current?.setGroups(undefined);
-    }, [groups])
+    }, [groups]);
 
-    return <div
-        ref={wrapper}
-        className={classNames("widget-timelinegantt", className)}
-        style={style}
-    ></div>;
+    return <div ref={wrapper} className={classNames("widget-timelinegantt", className)} style={style}></div>;
 }
