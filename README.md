@@ -24,6 +24,9 @@ See Demo.
  4. Optional: Configure group association
  5. Configure Items > Start date and Content
 
+## Custom styling
+See [vis-timeline docs](https://visjs.github.io/vis-timeline/docs/timeline/#Styles) for CSS styling.
+
 ## Issues, suggestions and feature requests
 Please report any issues to [Mendix-TimelineGantt/issues](https://github.com/Carter-Moorse/Mendix-TimelineGantt/issues)
 
