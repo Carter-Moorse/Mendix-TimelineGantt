@@ -7,7 +7,7 @@ import "./ui/TimelineGantt.css";
 import useOptions from "./utils/data";
 
 export function TimelineGantt(props: TimelineGanttContainerProps): ReactElement {
-    const { options, items, groups } = useOptions(props);
+    const { options, items, groups, onSelect } = useOptions(props);
 
     return (
         <TimelineView
@@ -16,6 +16,7 @@ export function TimelineGantt(props: TimelineGanttContainerProps): ReactElement 
             groups={groups}
             className={props.class}
             style={props.style}
+            onSelect={onSelect}
         />
     );
 }

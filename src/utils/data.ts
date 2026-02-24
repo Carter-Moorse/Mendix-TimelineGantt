@@ -1,5 +1,5 @@
 import { TimelineGanttContainerProps, ZoomMax_unitEnum, ZoomMin_unitEnum } from "../../typings/TimelineGanttProps";
-import { WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions } from "./widget";
+import { onSelectCallback, WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions } from "./widget";
 
 import { useMemo } from "react";
 import classNames from "classnames";
@@ -175,8 +175,8 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             max: props.max?.value,
             min: props.min?.value,
             moveable: props.moveable,
-            multiselect: props.multiselect,
-            multiselectPerGroup: props.multiselectPerGroup,
+            multiselect: props.selection?.type === "Multi",
+            multiselectPerGroup: props.selection?.type === "Multi" && props.multiselectPerGroup,
             order: (a, b) => a.order - b.order,
             orientation: {
                 axis: props.orientationAxis,
@@ -188,7 +188,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                 offset: Number(props.rollingModeOffset.toString())
             },
             rtl: props.rtl,
-            selectable: props.selectable,
+            selectable: !!props.selection,
             showCurrentTime: props.showCurrentTime,
             showMajorLabels: props.showMajorLabels,
             showMinorLabels: props.showMinorLabels,
@@ -280,5 +280,28 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         };
     }, [props.start, props.end, props.min, props.max]);
 
-    return { options, items, groups };
+    const onSelect: onSelectCallback = (_properties, selected) => {
+        if (props.selection === undefined) {
+            return;
+        }
+
+        const selectedObjs = selected?.map(item => item.obj!);
+        if (selectedObjs?.length) {
+            if (props.selection?.type === "Multi") {
+                props.selection?.setSelection(selectedObjs);
+            }
+            if (props.selection?.type === "Single") {
+                props.selection?.setSelection(selectedObjs[0]);
+            }
+        } else {
+            if (props.selection?.type === "Multi") {
+                props.selection?.setSelection([]);
+            }
+            if (props.selection?.type === "Single") {
+                props.selection?.setSelection(undefined);
+            }
+        }
+    };
+
+    return { options, items, groups, onSelect };
 }

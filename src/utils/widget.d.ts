@@ -26,3 +26,8 @@ export interface WidgetTimelineOptions extends TimelineOptions {
     onMoveGroup?: WidgetTimelineOptionsItemCallbackFunction;
     onRemove?: WidgetTimelineOptionsItemCallbackFunction;
 }
+
+export type onSelectCallback = (
+    properties: { items: WidgetDataItem[]?; event: PointerEvent },
+    selected: WidgetDataItem[]
+) => void;

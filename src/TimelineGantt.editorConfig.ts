@@ -133,15 +133,10 @@ export function getProperties(
         hidePropertiesIn(defaultProperties, _values, ["horizontalScroll"]);
     }
 
-    if (!_values.selectable) {
-        hidePropertiesIn(defaultProperties, _values, [
-            "item_selectable",
-            "multiselect",
-            "multiselectPerGroup",
-            "onUpdate"
-        ]);
+    if (_values.selection === "None") {
+        hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup", "item_selectable", "onUpdate"]);
     } else {
-        if (!_values.multiselect) {
+        if (_values.selection !== "Multi") {
             hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup"]);
         }
     }

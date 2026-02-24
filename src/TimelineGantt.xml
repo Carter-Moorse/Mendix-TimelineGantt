@@ -343,10 +343,19 @@
                     <returnType type="String" />
                 </property>
             </propertyGroup>
-            <propertyGroup caption="Selectable">
-                <property key="selectable" type="boolean" required="true" defaultValue="true">
-                    <caption>Selectable?</caption>
-                    <description></description>
+            <propertyGroup caption="Selection">
+                <property key="selection" type="selection" dataSource="item_data">
+                    <caption>Selection</caption>
+                    <description />
+                    <selectionTypes>
+                        <selectionType name="None" />
+                        <selectionType name="Single" />
+                        <selectionType name="Multi" />
+                    </selectionTypes>
+                </property>
+                <property key="multiselectPerGroup" type="boolean" required="true" defaultValue="false">
+                    <caption>Multiselect per group?</caption>
+                    <description>If true, selecting multiple items using shift+click will only select items residing in the same group as the first selected item.</description>
                 </property>
                 <property key="item_selectable" type="expression" required="false" dataSource="item_data">
                     <caption>Condition</caption>
@@ -356,14 +365,6 @@
                 <property key="onUpdate" type="action" dataSource="item_data">
                     <caption>On double-click</caption>
                     <description></description>
-                </property>
-                <property key="multiselect" type="boolean" required="true" defaultValue="false">
-                    <caption>Multiselect?</caption>
-                    <description>If true, multiple items can be selected using ctrl+click, shift+click, or by holding items.</description>
-                </property>
-                <property key="multiselectPerGroup" type="boolean" required="true" defaultValue="false">
-                    <caption>Multiselect per group?</caption>
-                    <description>If true, selecting multiple items using shift+click will only select items residing in the same group as the first selected item.</description>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Editable: Add">

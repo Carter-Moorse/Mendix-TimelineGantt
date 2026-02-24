@@ -4,7 +4,7 @@
  * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
-import { DynamicValue, ListValue, ListActionValue, ListAttributeValue, ListExpressionValue, ListReferenceValue } from "mendix";
+import { DynamicValue, ListValue, ListActionValue, ListAttributeValue, ListExpressionValue, ListReferenceValue, SelectionSingleValue, SelectionMultiValue } from "mendix";
 import { Big } from "big.js";
 
 export type ZoomKeyEnum = "none" | "altKey" | "ctrlKey" | "shiftKey" | "metaKey";
@@ -89,11 +89,10 @@ export interface TimelineGanttContainerProps {
     editableOverrideItems: boolean;
     item_class: string;
     item_dynamicClass?: ListExpressionValue<string>;
-    selectable: boolean;
+    selection?: SelectionSingleValue | SelectionMultiValue;
+    multiselectPerGroup: boolean;
     item_selectable?: ListExpressionValue<boolean>;
     onUpdate?: ListActionValue;
-    multiselect: boolean;
-    multiselectPerGroup: boolean;
     editableAdd: boolean;
     item_entity: string;
     editableRemove: boolean;
@@ -181,11 +180,10 @@ export interface TimelineGanttPreviewProps {
     editableOverrideItems: boolean;
     item_class: string;
     item_dynamicClass: string;
-    selectable: boolean;
+    selection: "None" | "Single" | "Multi";
+    multiselectPerGroup: boolean;
     item_selectable: string;
     onUpdate: {} | null;
-    multiselect: boolean;
-    multiselectPerGroup: boolean;
     editableAdd: boolean;
     item_entity: string;
     editableRemove: boolean;
