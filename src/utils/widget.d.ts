@@ -8,6 +8,8 @@ export type WidgetTimelineOptionsItemCallbackFunction = (
 
 export interface WidgetTimelineItem extends TimelineItem {
     obj?: ObjectItem;
+    start: Date;
+    end?: Date;
 }
 
 export interface WidgetDataItem extends DataItem {

@@ -372,9 +372,21 @@
                     <caption>Can add?</caption>
                     <description>If true, new items can be created by double tapping an empty space in the Timeline.</description>
                 </property>
-                <property key="item_entity" type="string" required="false">
-                    <caption>Item entity name</caption>
-                    <description>Item complete entity name in Mendix. IE: MyFirstModule.EntityName</description>
+                <property key="onAdd" type="action" defaultType="CallMicroflow">
+                    <caption>On add</caption>
+                    <description></description>
+                    <actionVariables>
+                        <actionVariable key="StartDate" type="DateTime" caption="Start date of new item" />
+                        <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
+                    </actionVariables>
+                </property>
+                <property key="onAddToGroup" type="action" defaultType="CallMicroflow" dataSource="group_data">
+                    <caption>On add</caption>
+                    <description></description>
+                    <actionVariables>
+                        <actionVariable key="StartDate" type="DateTime" caption="Start date of new item" />
+                        <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
+                    </actionVariables>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Editable: Remove">

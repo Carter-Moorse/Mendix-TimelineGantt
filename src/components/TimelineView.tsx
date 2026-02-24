@@ -1,5 +1,5 @@
 import { ReactElement, createElement, useRef, useEffect, CSSProperties } from "react";
-import { Timeline, DataItem, DataGroup, TimelineOptions, DataSet } from "vis-timeline/standalone";
+import { Timeline, DataItem, DataGroup, TimelineOptions, DataSet, TimelineOptionsItemCallbackFunction } from "vis-timeline/standalone";
 import classNames from "classnames";
 
 export interface TimelineViewProps {
@@ -9,9 +9,26 @@ export interface TimelineViewProps {
     className?: string;
     style?: CSSProperties;
     onSelect?: ((properties: any, data: DataItem[]) => void) | undefined;
+    onAdd?: TimelineOptionsItemCallbackFunction;
+    onUpdate?: TimelineOptionsItemCallbackFunction;
+    onMove?: TimelineOptionsItemCallbackFunction;
+    onMoveGroup?: TimelineOptionsItemCallbackFunction;
+    onRemove?: TimelineOptionsItemCallbackFunction;
 }
 
-export function TimelineView({ options, items, groups, className, style, onSelect }: TimelineViewProps): ReactElement {
+export function TimelineView({
+    options,
+    items,
+    groups,
+    className,
+    style,
+    onSelect,
+    onAdd,
+    onUpdate,
+    onMove,
+    onMoveGroup,
+    onRemove
+}: TimelineViewProps): ReactElement {
     const wrapper = useRef<HTMLDivElement>(null);
     const timeline = useRef<Timeline | null>(null);
     const data = useRef(new DataSet<DataItem, "id">());
@@ -31,14 +48,18 @@ export function TimelineView({ options, items, groups, className, style, onSelec
         }
         return () => timeline.current?.destroy();
     }, [wrapper]);
-
+    // Main options - if changed, will cause view to shift
     useEffect(() => timeline.current?.setOptions(options), [options]);
+    // Callback options - if changed, should not cause view to shift
+    useEffect(() => timeline.current?.setOptions({ onAdd, onUpdate, onMove, onMoveGroup, onRemove }), [onAdd, onUpdate, onMove, onMoveGroup, onRemove]);
+    // Update/remove items
     useEffect(() => {
         const currentIds = data.current.getIds();
         const newIds = items.map(i => i.id);
         data.current.update(items);
         data.current.remove(currentIds.filter(id => !newIds.includes(id)));
     }, [items]);
+    // Update/remove groups
     useEffect(() => {
         if (groups?.length) {
             timeline.current?.setGroups(group.current);

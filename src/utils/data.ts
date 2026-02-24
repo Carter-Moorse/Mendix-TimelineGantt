@@ -1,5 +1,5 @@
 import { TimelineGanttContainerProps, ZoomMax_unitEnum, ZoomMin_unitEnum } from "../../typings/TimelineGanttProps";
-import { onSelectCallback, WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions } from "./widget";
+import { onSelectCallback, WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions, WidgetTimelineOptionsItemCallbackFunction } from "./widget";
 
 import { useMemo } from "react";
 import classNames from "classnames";
@@ -39,20 +39,6 @@ function updateProperties(
                 callback: () => console.trace("Committed object: " + obj.getGuid())
             });
         }
-    });
-}
-// Work around for creating new MX object in versions < 9 using MX client
-function createObject(entity: string): Promise<mendix.lib.MxObject> {
-    return new Promise((resolve, reject) => {
-        mx.data.create({
-            entity,
-            callback(obj) {
-                resolve(obj);
-            },
-            error(err) {
-                reject(err);
-            }
-        });
     });
 }
 
@@ -202,9 +188,9 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                 props.timeAxisScale === "auto"
                     ? undefined
                     : {
-                          scale: props.timeAxisScale,
-                          step: props.timeAxisStep
-                      },
+                        scale: props.timeAxisScale,
+                        step: props.timeAxisStep
+                    },
             type: props.type,
             tooltip: {
                 delay: props.tooltipDelay,
@@ -216,67 +202,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             zoomKey: props.zoomKey === "none" ? undefined : props.zoomKey,
             zoomFriction: props.zoomFriction,
             zoomMax: calcTime(props.zoomMax_unit, props.zoomMax),
-            zoomMin: calcTime(props.zoomMin_unit, props.zoomMin),
-            onAdd(item, callback) {
-                createObject(props.item_entity).then(obj => {
-                    if (props.item_startdateAttr) {
-                        obj.set(props.item_startdateAttr, item.start);
-                    }
-                    if (props.item_enddateAttr) {
-                        obj.set(props.item_enddateAttr, item.end);
-                    }
-                    if (props.item_groupRef && item.group) {
-                        obj.addReference(props.item_groupRef, item.group);
-                    }
-                    mx.data.commit({ mxobj: obj, callback: () => console.trace("Committed object: " + obj.getGuid()) });
-                });
-
-                callback(null);
-            },
-            onUpdate(item, callback) {
-                if (item.obj === undefined) {
-                    callback(null);
-                    return;
-                }
-                const action = props.onUpdate?.get(item.obj);
-                if (action?.canExecute) {
-                    action.execute();
-                }
-                callback(item);
-            },
-            onMove(item, callback) {
-                if (item.obj === undefined) {
-                    callback(null);
-                    return;
-                }
-
-                updateProperties(
-                    [
-                        { name: props.item_startdateAttr, value: item.start },
-                        { name: props.item_enddateAttr, value: item.end }
-                    ],
-                    [{ name: props.item_groupRef, guid: item.group || "" }],
-                    item.obj.id.toString()
-                );
-
-                const action = props.onMove?.get(item.obj);
-                if (action?.canExecute) {
-                    action.execute();
-                }
-                callback(item);
-            },
-            onRemove(item, callback) {
-                if (item.obj === undefined) {
-                    callback(item);
-                    return;
-                }
-
-                const action = props.onRemove?.get(item.obj);
-                if (action?.canExecute) {
-                    action.execute();
-                }
-                callback(null);
-            }
+            zoomMin: calcTime(props.zoomMin_unit, props.zoomMin)
         };
     }, [props.start, props.end, props.min, props.max]);
 
@@ -303,5 +229,61 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         }
     };
 
-    return { options, items, groups, onSelect };
+    const onAdd: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
+        const group = groups?.find(x => x.id === item.group)?.obj;
+        const action = group ? props.onAddToGroup?.get(group) : props.onAdd;
+        if (action?.canExecute) {
+            action?.execute({ StartDate: item.start, EndDate: item.end });
+        }
+        callback(null);
+    }
+
+    const onUpdate: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
+        if (item.obj === undefined) {
+            callback(null);
+            return;
+        }
+        const action = props.onUpdate?.get(item.obj);
+        if (action?.canExecute) {
+            action.execute();
+        }
+        callback(item);
+    }
+
+    const onMove: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
+        if (item.obj === undefined) {
+            callback(null);
+            return;
+        }
+
+        updateProperties(
+            [
+                { name: props.item_startdateAttr, value: item.start },
+                { name: props.item_enddateAttr, value: item.end }
+            ],
+            [{ name: props.item_groupRef, guid: item.group || "" }],
+            item.obj.id.toString()
+        );
+
+        const action = props.onMove?.get(item.obj);
+        if (action?.canExecute) {
+            action.execute();
+        }
+        callback(item);
+    }
+
+    const onRemove: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
+        if (item.obj === undefined) {
+            callback(item);
+            return;
+        }
+
+        const action = props.onRemove?.get(item.obj);
+        if (action?.canExecute) {
+            action.execute();
+        }
+        callback(null);
+    }
+
+    return { options, items, groups, onSelect, onAdd, onMove, onRemove, onUpdate };
 }

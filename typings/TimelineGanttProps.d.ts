@@ -4,7 +4,7 @@
  * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
-import { DynamicValue, ListValue, ListActionValue, ListAttributeValue, ListExpressionValue, ListReferenceValue, SelectionSingleValue, SelectionMultiValue } from "mendix";
+import { ActionValue, DynamicValue, ListValue, Option, ListActionValue, ListAttributeValue, ListExpressionValue, ListReferenceValue, SelectionSingleValue, SelectionMultiValue } from "mendix";
 import { Big } from "big.js";
 
 export type ZoomKeyEnum = "none" | "altKey" | "ctrlKey" | "shiftKey" | "metaKey";
@@ -94,7 +94,8 @@ export interface TimelineGanttContainerProps {
     item_selectable?: ListExpressionValue<boolean>;
     onUpdate?: ListActionValue;
     editableAdd: boolean;
-    item_entity: string;
+    onAdd?: ActionValue<{ StartDate: Option<Date>; EndDate: Option<Date> }>;
+    onAddToGroup?: ListActionValue<{ StartDate: Option<Date>; EndDate: Option<Date> }>;
     editableRemove: boolean;
     item_remove?: ListExpressionValue<boolean>;
     onRemove?: ListActionValue;
@@ -185,7 +186,8 @@ export interface TimelineGanttPreviewProps {
     item_selectable: string;
     onUpdate: {} | null;
     editableAdd: boolean;
-    item_entity: string;
+    onAdd: {} | null;
+    onAddToGroup: {} | null;
     editableRemove: boolean;
     item_remove: string;
     onRemove: {} | null;

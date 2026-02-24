@@ -142,7 +142,7 @@ export function getProperties(
     }
 
     if (!_values.editableAdd) {
-        hidePropertiesIn(defaultProperties, _values, ["item_entity"]);
+        hidePropertiesIn(defaultProperties, _values, ["onAdd", "onAddToGroup"]);
     }
     if (!_values.editableRemove) {
         hidePropertiesIn(defaultProperties, _values, ["item_remove", "onRemove"]);
@@ -173,7 +173,13 @@ export function getProperties(
             "group_dynamicClass",
             "editableUpdateGroup",
             "item_updateGroup",
-            "item_groupRef"
+            "item_groupRef",
+            "onAddToGroup"
+        ]);
+    }
+    else {
+        hidePropertiesIn(defaultProperties, _values, [
+            "onAdd"
         ]);
     }
 
