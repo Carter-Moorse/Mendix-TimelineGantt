@@ -1,46 +1,14 @@
 import { TimelineGanttContainerProps, ZoomMax_unitEnum, ZoomMin_unitEnum } from "../../typings/TimelineGanttProps";
-import { onSelectCallback, WidgetDataGroup, WidgetDataItem, WidgetTimelineOptions, WidgetTimelineOptionsItemCallbackFunction } from "./widget";
+import {
+    onSelectCallback,
+    WidgetDataGroup,
+    WidgetDataItem,
+    WidgetTimelineOptions,
+    WidgetTimelineOptionsItemCallbackFunction
+} from "./widget";
 
 import { useMemo } from "react";
 import classNames from "classnames";
-
-// MX pluggable widget feature not yet supported!
-// Message - Widget MyFirstModule.Home_Web.timelineGantt1 is attempting to call "setValue". This operation is not yet supported on attributes linked to a datasource.
-// https://docs.mendix.com/apidocs-mxsdk/apidocs/pluggable-widgets-client-apis-list-values/#obtaining-attribute-value
-/*
-function updateProperty({ item_startdate, item_enddate }: TimelineGanttContainerProps, { start, end, obj }: WidgetTimelineItem) {    
-    if (obj == undefined) return;
-
-    if (start instanceof Date) item_startdate.get(obj).setValue(start);
-    else item_startdate.get(obj).setTextValue(String(start));
-
-    if (end instanceof Date) item_enddate?.get(obj).setValue(end);
-    else item_enddate?.get(obj).setTextValue(String(end));
-}
-*/
-
-// Work around for updating property on ListAttributeValue using MX client
-function updateProperties(
-    attributes?: Array<{ name?: string; value?: any }>,
-    references?: Array<{ name?: string; guid: string | number }>,
-    id?: string
-) {
-    if (id === undefined) {
-        return;
-    }
-
-    mx.data.get({
-        guid: id,
-        callback: obj => {
-            attributes?.forEach(({ name, value }) => name && obj.set(name, value));
-            references?.forEach(({ name, guid }) => name && obj.addReference(name, guid));
-            mx.data.commit({
-                mxobj: obj,
-                callback: () => console.trace("Committed object: " + obj.getGuid())
-            });
-        }
-    });
-}
 
 function calcTime(unit: ZoomMax_unitEnum | ZoomMin_unitEnum, value: number) {
     switch (unit) {
@@ -188,9 +156,9 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                 props.timeAxisScale === "auto"
                     ? undefined
                     : {
-                        scale: props.timeAxisScale,
-                        step: props.timeAxisStep
-                    },
+                          scale: props.timeAxisScale,
+                          step: props.timeAxisStep
+                      },
             type: props.type,
             tooltip: {
                 delay: props.tooltipDelay,
@@ -230,13 +198,13 @@ export default function useOptions(props: TimelineGanttContainerProps) {
     };
 
     const onAdd: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
-        const group = groups?.find(x => x.id === item.group)?.obj;
-        const action = group ? props.onAddToGroup?.get(group) : props.onAdd;
+        const groupObj = groups?.find(x => x.id === item.group)?.obj;
+        const action = groupObj ? props.onAddToGroup?.get(groupObj) : props.onAdd;
         if (action?.canExecute) {
             action?.execute({ StartDate: item.start, EndDate: item.end });
         }
         callback(null);
-    }
+    };
 
     const onUpdate: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
         if (item.obj === undefined) {
@@ -246,31 +214,25 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         const action = props.onUpdate?.get(item.obj);
         if (action?.canExecute) {
             action.execute();
+            callback(item);
+        } else {
+            callback(null);
         }
-        callback(item);
-    }
+    };
 
     const onMove: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
-        if (item.obj === undefined) {
-            callback(null);
-            return;
-        }
-
-        updateProperties(
-            [
-                { name: props.item_startdateAttr, value: item.start },
-                { name: props.item_enddateAttr, value: item.end }
-            ],
-            [{ name: props.item_groupRef, guid: item.group || "" }],
-            item.obj.id.toString()
-        );
-
-        const action = props.onMove?.get(item.obj);
+        const groupObj = groups?.find(x => x.id === item.group)?.obj;
+        const groupGUID = groupObj && groupObj?.id;
+        const groupRef = groupObj && props.group_onMoveRef?.get(groupObj).displayValue;
+        const action =
+            props.editableUpdateGroup && groupObj ? props.onMoveToGroup?.get(item.obj!) : props.onMove?.get(item.obj!);
         if (action?.canExecute) {
-            action.execute();
+            action.execute({ StartDate: item.start, EndDate: item.end, GroupGUID: groupGUID, GroupRef: groupRef });
+            callback(item);
+        } else {
+            callback(null);
         }
-        callback(item);
-    }
+    };
 
     const onRemove: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
         if (item.obj === undefined) {
@@ -283,7 +245,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             action.execute();
         }
         callback(null);
-    }
+    };
 
     return { options, items, groups, onSelect, onAdd, onMove, onRemove, onUpdate };
 }

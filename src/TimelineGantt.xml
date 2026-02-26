@@ -37,7 +37,7 @@
                 </property>
                 <property key="height" type="string" required="false" defaultValue="">
                     <caption>Height</caption>
-                    <description></description>
+                    <description>If blank, the height of the timeline is automatically adjusted to fit the contents</description>
                 </property>
                 <property key="minHeight" type="string" required="false" defaultValue="">
                     <caption>Min height</caption>
@@ -357,7 +357,7 @@
                     <caption>Multiselect per group?</caption>
                     <description>If true, selecting multiple items using shift+click will only select items residing in the same group as the first selected item.</description>
                 </property>
-                <property key="item_selectable" type="expression" required="false" dataSource="item_data">
+                <property key="item_selectable" type="expression" required="false" dataSource="item_data" defaultValue="true">
                     <caption>Condition</caption>
                     <description></description>
                     <returnType type="Boolean" />
@@ -367,6 +367,57 @@
                     <description></description>
                 </property>
             </propertyGroup>
+            <propertyGroup caption="Editable: Move">
+                <property key="editableUpdateTime" type="boolean" required="true" defaultValue="false">
+                    <caption>Can move?</caption>
+                    <description>If true, items can be dragged to another moment in time.</description>
+                </property>
+                <property key="item_updateTime" type="expression" required="false" dataSource="item_data" defaultValue="true">
+                    <caption>Condition</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="editableUpdateGroup" type="boolean" required="true" defaultValue="false">
+                    <caption>Can move group?</caption>
+                    <description>If true, items can be dragged from one group to another.</description>
+                </property>
+                <property key="item_updateGroup" type="expression" required="false" dataSource="item_data" defaultValue="true">
+                    <caption>Condition</caption>
+                    <description></description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="group_onMoveRef" type="attribute" dataSource="group_data" required="true">
+                    <caption>Group reference</caption>
+                    <description>Unique attribute used to retrieve group and set group in 'On move' action</description>
+                    <attributeTypes>
+                        <attributeType name="AutoNumber"/>
+                        <attributeType name="DateTime"/>
+                        <attributeType name="Enum"/>
+                        <attributeType name="Integer"/>
+                        <attributeType name="Long"/>
+                        <attributeType name="String"/>
+                        <attributeType name="Decimal"/>
+                    </attributeTypes>
+                </property>
+                <property key="onMove" type="action" defaultType="CallMicroflow" required="false" dataSource="item_data">
+                    <caption>On move</caption>
+                    <description>Microflow or Nanoflow used to update item start date and end date (action variables)</description>
+                    <actionVariables>
+                        <actionVariable key="StartDate" type="DateTime" caption="Start date of new item" />
+                        <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
+                    </actionVariables>
+                </property>
+                <property key="onMoveToGroup" type="action" defaultType="CallMicroflow" dataSource="item_data">
+                    <caption>On move</caption>
+                    <description>Microflow or Nanoflow used to update item start date, end date and group ref (action variables)</description>
+                    <actionVariables>
+                        <actionVariable key="StartDate" type="DateTime" caption="Start date of new item" />
+                        <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
+                        <actionVariable key="GroupRef" type="String" caption="Group reference attribute" />
+                        <actionVariable key="GroupGUID" type="String" caption="Group GUID" />
+                    </actionVariables>
+                </property>
+            </propertyGroup>
             <propertyGroup caption="Editable: Add">
                 <property key="editableAdd" type="boolean" required="true" defaultValue="false">
                     <caption>Can add?</caption>
@@ -374,7 +425,7 @@
                 </property>
                 <property key="onAdd" type="action" defaultType="CallMicroflow">
                     <caption>On add</caption>
-                    <description></description>
+                    <description>Microflow or Nanoflow used to create item with start date and end date (action variables)</description>
                     <actionVariables>
                         <actionVariable key="StartDate" type="DateTime" caption="Start date of new item" />
                         <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
@@ -382,7 +433,7 @@
                 </property>
                 <property key="onAddToGroup" type="action" defaultType="CallMicroflow" dataSource="group_data">
                     <caption>On add</caption>
-                    <description></description>
+                    <description>Microflow or Nanoflow used to create item with start date and end date (action variables). Group is passed as object</description>
                     <actionVariables>
                         <actionVariable key="StartDate" type="DateTime" caption="Start date of new item" />
                         <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
@@ -394,49 +445,13 @@
                     <caption>Can remove?</caption>
                     <description>If true, items can be deleted by first selecting them, and then clicking the delete button on the top right of the item.</description>
                 </property>
-                <property key="item_remove" type="expression" required="false" dataSource="item_data">
+                <property key="item_remove" type="expression" required="false" dataSource="item_data" defaultValue="true">
                     <caption>Condition</caption>
                     <description></description>
                     <returnType type="Boolean" />
                 </property>
                 <property key="onRemove" type="action" required="false" dataSource="item_data">
                     <caption>On remove</caption>
-                    <description></description>
-                </property>
-            </propertyGroup>
-            <propertyGroup caption="Editable: Move">
-                <property key="editableUpdateTime" type="boolean" required="true" defaultValue="false">
-                    <caption>Can move?</caption>
-                    <description>If true, items can be dragged to another moment in time.</description>
-                </property>
-                <property key="item_updateTime" type="expression" required="false" dataSource="item_data">
-                    <caption>Condition</caption>
-                    <description></description>
-                    <returnType type="Boolean" />
-                </property>
-                <property key="item_startdateAttr" type="string" required="false">
-                    <caption>Start date attribute</caption>
-                    <description>Attribute name in Mendix</description>
-                </property>
-                <property key="item_enddateAttr" type="string" required="false">
-                    <caption>End date attribute</caption>
-                    <description>Attribute name in Mendix</description>
-                </property>
-                <property key="editableUpdateGroup" type="boolean" required="true" defaultValue="false">
-                    <caption>Can move group?</caption>
-                    <description>If true, items can be dragged from one group to another.</description>
-                </property>
-                <property key="item_updateGroup" type="expression" required="false" dataSource="item_data">
-                    <caption>Condition</caption>
-                    <description></description>
-                    <returnType type="Boolean" />
-                </property>
-                <property key="item_groupRef" type="string" required="false">
-                    <caption>Group association</caption>
-                    <description>Complete group association name in Mendix. IE: MyFirstModule.Entity_RefEntity</description>
-                </property>
-                <property key="onMove" type="action" required="false" dataSource="item_data">
-                    <caption>On move</caption>
                     <description></description>
                 </property>
             </propertyGroup>

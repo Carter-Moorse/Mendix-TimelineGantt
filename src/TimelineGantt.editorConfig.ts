@@ -134,7 +134,17 @@ export function getProperties(
     }
 
     if (_values.selection === "None") {
-        hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup", "item_selectable", "onUpdate"]);
+        hidePropertiesIn(defaultProperties, _values, [
+            "multiselectPerGroup",
+            "item_selectable",
+            "onUpdate",
+            "editableUpdateTime",
+            "item_updateTime",
+            "editableUpdateGroup",
+            "item_updateGroup",
+            "onMove",
+            "onMoveToGroup"
+        ]);
     } else {
         if (_values.selection !== "Multi") {
             hidePropertiesIn(defaultProperties, _values, ["multiselectPerGroup"]);
@@ -150,13 +160,16 @@ export function getProperties(
     if (!_values.editableUpdateTime) {
         hidePropertiesIn(defaultProperties, _values, [
             "item_updateTime",
-            "item_startdateAttr",
-            "item_enddateAttr",
-            "onMove"
+            "editableUpdateGroup",
+            "item_updateGroup",
+            "onMove",
+            "onMoveToGroup"
         ]);
     }
     if (!_values.editableUpdateGroup) {
-        hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "item_groupRef"]);
+        hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "onMoveToGroup", "group_onMoveRef"]);
+    } else {
+        hidePropertiesIn(defaultProperties, _values, ["onMove"]);
     }
 
     if (_values.editableOverrideItems) {
@@ -173,14 +186,10 @@ export function getProperties(
             "group_dynamicClass",
             "editableUpdateGroup",
             "item_updateGroup",
-            "item_groupRef",
             "onAddToGroup"
         ]);
-    }
-    else {
-        hidePropertiesIn(defaultProperties, _values, [
-            "onAdd"
-        ]);
+    } else {
+        hidePropertiesIn(defaultProperties, _values, ["onAdd"]);
     }
 
     return defaultProperties;

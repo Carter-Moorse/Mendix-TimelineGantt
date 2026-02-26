@@ -1,5 +1,12 @@
 import { ReactElement, createElement, useRef, useEffect, CSSProperties } from "react";
-import { Timeline, DataItem, DataGroup, TimelineOptions, DataSet, TimelineOptionsItemCallbackFunction } from "vis-timeline/standalone";
+import {
+    Timeline,
+    DataItem,
+    DataGroup,
+    TimelineOptions,
+    DataSet,
+    TimelineOptionsItemCallbackFunction
+} from "vis-timeline/standalone";
 import classNames from "classnames";
 
 export interface TimelineViewProps {
@@ -51,7 +58,10 @@ export function TimelineView({
     // Main options - if changed, will cause view to shift
     useEffect(() => timeline.current?.setOptions(options), [options]);
     // Callback options - if changed, should not cause view to shift
-    useEffect(() => timeline.current?.setOptions({ onAdd, onUpdate, onMove, onMoveGroup, onRemove }), [onAdd, onUpdate, onMove, onMoveGroup, onRemove]);
+    useEffect(
+        () => timeline.current?.setOptions({ onAdd, onUpdate, onMove, onMoveGroup, onRemove }),
+        [onAdd, onUpdate, onMove, onMoveGroup, onRemove]
+    );
     // Update/remove items
     useEffect(() => {
         const currentIds = data.current.getIds();
