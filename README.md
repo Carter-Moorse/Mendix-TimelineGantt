@@ -1,3 +1,5 @@
+<img src="/assets/icon.svg" height="64px" />
+
 ## Timeline Gantt - Mendix Pluggable Widget
 Display a timeline gantt chart in your Mendix app using [vis-timeline](https://github.com/visjs/vis-timeline) library.
 
