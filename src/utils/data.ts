@@ -1,10 +1,10 @@
 import { TimelineGanttContainerProps, ZoomMax_unitEnum, ZoomMin_unitEnum } from "../../typings/TimelineGanttProps";
 import {
-    onSelectCallback,
     WidgetDataGroup,
     WidgetDataItem,
     WidgetTimelineOptions,
-    WidgetTimelineOptionsItemCallbackFunction
+    WidgetTimelineOptionsItemCallbackFunction,
+    WidgetMouseEventCallback
 } from "./widget";
 
 import { useMemo } from "react";
@@ -82,9 +82,9 @@ export default function useOptions(props: TimelineGanttContainerProps) {
                 selectable: props.item_selectable?.get(obj).value,
                 className: classNames(props.item_class, props.item_dynamicClass?.get(obj).value),
                 editable: {
-                    remove: props.item_remove?.get(obj).value,
-                    updateTime: props.item_updateTime?.get(obj).value,
-                    updateGroup: props.item_updateGroup?.get(obj).value
+                    remove: props.editableRemove && props.item_remove?.get(obj).value,
+                    updateTime: props.editableUpdateTime && props.item_updateTime?.get(obj).value,
+                    updateGroup: props.editableUpdateGroup && props.item_updateGroup?.get(obj).value
                 },
                 group: props.item_group?.get(obj).value?.id.toString(),
                 order: index
@@ -99,7 +99,7 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             clickToUse: props.clickToUse,
             editable: {
                 add: props.editableAdd,
-                overrideItems: props.editableOverrideItems,
+                overrideItems: false,
                 remove: props.editableRemove,
                 updateGroup: props.editableUpdateGroup,
                 updateTime: props.editableUpdateTime
@@ -174,12 +174,13 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         };
     }, [props.start, props.end, props.min, props.max]);
 
-    const onSelect: onSelectCallback = (_properties, selected) => {
+    const onSelect: WidgetMouseEventCallback = properties => {
         if (props.selection === undefined) {
             return;
         }
-
-        const selectedObjs = selected?.map(item => item.obj!);
+        const selectedObjs = items
+            ?.map(item => (properties.items?.includes(item.id!) ? item.obj! : undefined))
+            .filter(item => !!item);
         if (selectedObjs?.length) {
             if (props.selection?.type === "Multi") {
                 props.selection?.setSelection(selectedObjs);
@@ -197,27 +198,44 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         }
     };
 
+    const onDoubleClick: WidgetMouseEventCallback = properties => {
+        // Double-click on item
+        if (properties.what === "item") {
+            if (properties.item === undefined) {
+                return;
+            }
+            const item = items?.find(x => x.id === properties.item);
+            if (!item) {
+                return;
+            }
+            const action = props.item_doubleClick?.get(item.obj!);
+            if (action?.canExecute) {
+                action.execute();
+            }
+        }
+        // Double-click on group
+        else if (properties.what === "group-label") {
+            if (properties.group === undefined) {
+                return;
+            }
+            const group = groups?.find(x => x.id === properties.group);
+            if (!group) {
+                return;
+            }
+            const action = props.group_doubleClick?.get(group.obj!);
+            if (action?.canExecute) {
+                action.execute();
+            }
+        }
+    };
+
     const onAdd: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
         const groupObj = groups?.find(x => x.id === item.group)?.obj;
-        const action = groupObj ? props.onAddToGroup?.get(groupObj) : props.onAdd;
+        const action = groupObj ? props.item_onAddToGroup?.get(groupObj) : props.item_onAdd;
         if (action?.canExecute) {
             action?.execute({ StartDate: item.start, EndDate: item.end });
         }
         callback(null);
-    };
-
-    const onUpdate: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
-        if (item.obj === undefined) {
-            callback(null);
-            return;
-        }
-        const action = props.onUpdate?.get(item.obj);
-        if (action?.canExecute) {
-            action.execute();
-            callback(item);
-        } else {
-            callback(null);
-        }
     };
 
     const onMove: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
@@ -225,7 +243,9 @@ export default function useOptions(props: TimelineGanttContainerProps) {
         const groupGUID = groupObj && groupObj?.id;
         const groupRef = groupObj && props.group_onMoveRef?.get(groupObj).displayValue;
         const action =
-            props.editableUpdateGroup && groupObj ? props.onMoveToGroup?.get(item.obj!) : props.onMove?.get(item.obj!);
+            props.editableUpdateGroup && groupObj
+                ? props.item_onMoveToGroup?.get(item.obj!)
+                : props.item_onMove?.get(item.obj!);
         if (action?.canExecute) {
             action.execute({ StartDate: item.start, EndDate: item.end, GroupGUID: groupGUID, GroupRef: groupRef });
             callback(item);
@@ -240,12 +260,12 @@ export default function useOptions(props: TimelineGanttContainerProps) {
             return;
         }
 
-        const action = props.onRemove?.get(item.obj);
+        const action = props.item_onRemove?.get(item.obj);
         if (action?.canExecute) {
             action.execute();
         }
         callback(null);
     };
 
-    return { options, items, groups, onSelect, onAdd, onMove, onRemove, onUpdate };
+    return { options, items, groups, onSelect, onAdd, onMove, onRemove, onDoubleClick };
 }

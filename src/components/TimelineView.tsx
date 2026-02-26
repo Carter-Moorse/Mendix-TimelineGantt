@@ -15,9 +15,9 @@ export interface TimelineViewProps {
     groups?: DataGroup[];
     className?: string;
     style?: CSSProperties;
-    onSelect?: ((properties: any, data: DataItem[]) => void) | undefined;
+    onSelect?: ((properties: any) => void) | undefined;
+    onDoubleClick?: ((properties: any) => void) | undefined;
     onAdd?: TimelineOptionsItemCallbackFunction;
-    onUpdate?: TimelineOptionsItemCallbackFunction;
     onMove?: TimelineOptionsItemCallbackFunction;
     onMoveGroup?: TimelineOptionsItemCallbackFunction;
     onRemove?: TimelineOptionsItemCallbackFunction;
@@ -31,7 +31,7 @@ export function TimelineView({
     style,
     onSelect,
     onAdd,
-    onUpdate,
+    onDoubleClick,
     onMove,
     onMoveGroup,
     onRemove
@@ -44,24 +44,20 @@ export function TimelineView({
     // Build up/Tear down
     useEffect(() => {
         timeline.current = wrapper.current ? new Timeline(wrapper.current, data.current, options) : null;
-
-        if (timeline.current) {
-            timeline.current.on("select", props => {
-                if (onSelect) {
-                    const selected = data.current.get({ filter: item => props.items?.includes(item.id) });
-                    onSelect(props, selected);
-                }
-            });
-        }
         return () => timeline.current?.destroy();
     }, [wrapper]);
     // Main options - if changed, will cause view to shift
     useEffect(() => timeline.current?.setOptions(options), [options]);
     // Callback options - if changed, should not cause view to shift
-    useEffect(
-        () => timeline.current?.setOptions({ onAdd, onUpdate, onMove, onMoveGroup, onRemove }),
-        [onAdd, onUpdate, onMove, onMoveGroup, onRemove]
-    );
+    useEffect(() => {
+        timeline.current?.setOptions({ onAdd, onMove, onMoveGroup, onRemove });
+        timeline.current?.on("select", onSelect);
+        timeline.current?.on("doubleClick", onDoubleClick);
+        return () => {
+            timeline.current?.off("select", onSelect);
+            timeline.current?.off("doubleClick", onDoubleClick);
+        };
+    }, [onSelect, onDoubleClick, onAdd, onMove, onMoveGroup, onRemove]);
     // Update/remove items
     useEffect(() => {
         const currentIds = data.current.getIds();

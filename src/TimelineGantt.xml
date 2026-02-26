@@ -324,10 +324,6 @@
                     <caption>Stack?</caption>
                     <description></description>
                 </property>
-                <property key="editableOverrideItems" type="boolean" required="true" defaultValue="false">
-                    <caption>Override editable properties?</caption>
-                    <description>If true, item specific editable properties are overridden by timeline settings.</description>
-                </property>
                 <!-- TODO: Sub-group functionality -->
                 <!-- <property key="stackSubgroups" type="boolean" required="true" defaultValue="true">
                     <caption>Stack subgroups?</caption>
@@ -341,6 +337,10 @@
                     <caption>Dynamic classes</caption>
                     <description></description>
                     <returnType type="String" />
+                </property>
+                <property key="item_doubleClick" type="action" dataSource="item_data">
+                    <caption>On double-click</caption>
+                    <description></description>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Selection">
@@ -361,10 +361,6 @@
                     <caption>Condition</caption>
                     <description></description>
                     <returnType type="Boolean" />
-                </property>
-                <property key="onUpdate" type="action" dataSource="item_data">
-                    <caption>On double-click</caption>
-                    <description></description>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Editable: Move">
@@ -399,7 +395,7 @@
                         <attributeType name="Decimal"/>
                     </attributeTypes>
                 </property>
-                <property key="onMove" type="action" defaultType="CallMicroflow" required="false" dataSource="item_data">
+                <property key="item_onMove" type="action" defaultType="CallMicroflow" required="false" dataSource="item_data">
                     <caption>On move</caption>
                     <description>Microflow or Nanoflow used to update item start date and end date (action variables)</description>
                     <actionVariables>
@@ -407,7 +403,7 @@
                         <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
                     </actionVariables>
                 </property>
-                <property key="onMoveToGroup" type="action" defaultType="CallMicroflow" dataSource="item_data">
+                <property key="item_onMoveToGroup" type="action" defaultType="CallMicroflow" dataSource="item_data">
                     <caption>On move</caption>
                     <description>Microflow or Nanoflow used to update item start date, end date and group ref (action variables)</description>
                     <actionVariables>
@@ -423,7 +419,7 @@
                     <caption>Can add?</caption>
                     <description>If true, new items can be created by double tapping an empty space in the Timeline.</description>
                 </property>
-                <property key="onAdd" type="action" defaultType="CallMicroflow">
+                <property key="item_onAdd" type="action" defaultType="CallMicroflow">
                     <caption>On add</caption>
                     <description>Microflow or Nanoflow used to create item with start date and end date (action variables)</description>
                     <actionVariables>
@@ -431,7 +427,7 @@
                         <actionVariable key="EndDate" type="DateTime" caption="End date of new item" />
                     </actionVariables>
                 </property>
-                <property key="onAddToGroup" type="action" defaultType="CallMicroflow" dataSource="group_data">
+                <property key="item_onAddToGroup" type="action" defaultType="CallMicroflow" dataSource="group_data">
                     <caption>On add</caption>
                     <description>Microflow or Nanoflow used to create item with start date and end date (action variables). Group is passed as object</description>
                     <actionVariables>
@@ -450,7 +446,7 @@
                     <description></description>
                     <returnType type="Boolean" />
                 </property>
-                <property key="onRemove" type="action" required="false" dataSource="item_data">
+                <property key="item_onRemove" type="action" required="false" dataSource="item_data">
                     <caption>On remove</caption>
                     <description></description>
                 </property>
@@ -496,6 +492,10 @@
                     <caption>Dynamic classes</caption>
                     <description></description>
                     <returnType type="String" />
+                </property>
+                <property key="group_doubleClick" type="action" dataSource="group_data">
+                    <caption>On double-click</caption>
+                    <description></description>
                 </property>
             </propertyGroup>
         </propertyGroup>

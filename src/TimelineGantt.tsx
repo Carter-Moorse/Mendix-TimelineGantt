@@ -7,7 +7,7 @@ import "./ui/TimelineGantt.css";
 import useOptions from "./utils/data";
 
 export function TimelineGantt(props: TimelineGanttContainerProps): ReactElement {
-    const { options, items, groups, onSelect, onAdd, onMove, onRemove, onUpdate } = useOptions(props);
+    const { options, items, groups, onSelect, onAdd, onMove, onRemove, onDoubleClick } = useOptions(props);
 
     return (
         <TimelineView
@@ -17,10 +17,10 @@ export function TimelineGantt(props: TimelineGanttContainerProps): ReactElement 
             className={props.class}
             style={props.style}
             onSelect={onSelect}
+            onDoubleClick={onDoubleClick}
             onAdd={onAdd}
             onMove={onMove}
             onRemove={onRemove}
-            onUpdate={onUpdate}
         />
     );
 }

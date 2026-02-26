@@ -1,4 +1,4 @@
-import { DataItem, DataGroup, TimelineItem, TimelineOptions } from "vis-timeline/standalone";
+import { DataItem, DataGroup, TimelineItem, TimelineOptions, IdType } from "vis-timeline/standalone";
 import { ObjectItem } from "mendix";
 
 export type WidgetTimelineOptionsItemCallbackFunction = (
@@ -29,7 +29,22 @@ export interface WidgetTimelineOptions extends TimelineOptions {
     onRemove?: WidgetTimelineOptionsItemCallbackFunction;
 }
 
-export type onSelectCallback = (
-    properties: { items: WidgetDataItem[]?; event: PointerEvent },
-    selected: WidgetDataItem[]
-) => void;
+export interface WidgetEventProperties {
+    items?: IdType[];
+    event: MouseEvent;
+}
+
+export interface WidgetMouseEventProperties extends WidgetEventProperties {
+    group?: IdType;
+    item?: IdType;
+    customTime?: number;
+    pageX: number;
+    pageY: number;
+    x: number;
+    y: number;
+    time: Date;
+    snappedTime: Date;
+    what?: "item" | "background" | "axis" | "group-label" | "custom-time" | "current-time";
+}
+
+export type WidgetMouseEventCallback = (properties: WidgetMouseEventProperties) => void;

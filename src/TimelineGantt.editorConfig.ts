@@ -137,13 +137,12 @@ export function getProperties(
         hidePropertiesIn(defaultProperties, _values, [
             "multiselectPerGroup",
             "item_selectable",
-            "onUpdate",
             "editableUpdateTime",
             "item_updateTime",
             "editableUpdateGroup",
             "item_updateGroup",
-            "onMove",
-            "onMoveToGroup"
+            "item_onMove",
+            "item_onMoveToGroup"
         ]);
     } else {
         if (_values.selection !== "Multi") {
@@ -152,28 +151,24 @@ export function getProperties(
     }
 
     if (!_values.editableAdd) {
-        hidePropertiesIn(defaultProperties, _values, ["onAdd", "onAddToGroup"]);
+        hidePropertiesIn(defaultProperties, _values, ["item_onAdd", "item_onAddToGroup"]);
     }
     if (!_values.editableRemove) {
-        hidePropertiesIn(defaultProperties, _values, ["item_remove", "onRemove"]);
+        hidePropertiesIn(defaultProperties, _values, ["item_remove", "item_onRemove"]);
     }
     if (!_values.editableUpdateTime) {
         hidePropertiesIn(defaultProperties, _values, [
             "item_updateTime",
             "editableUpdateGroup",
             "item_updateGroup",
-            "onMove",
-            "onMoveToGroup"
+            "item_onMove",
+            "item_onMoveToGroup"
         ]);
     }
     if (!_values.editableUpdateGroup) {
-        hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "onMoveToGroup", "group_onMoveRef"]);
+        hidePropertiesIn(defaultProperties, _values, ["item_updateGroup", "item_onMoveToGroup", "group_onMoveRef"]);
     } else {
-        hidePropertiesIn(defaultProperties, _values, ["onMove"]);
-    }
-
-    if (_values.editableOverrideItems) {
-        hidePropertiesIn(defaultProperties, _values, ["item_remove", "item_updateTime", "item_updateGroup"]);
+        hidePropertiesIn(defaultProperties, _values, ["item_onMove"]);
     }
 
     if (!_values.group_data) {
@@ -184,12 +179,13 @@ export function getProperties(
             "groupOrder",
             "group_class",
             "group_dynamicClass",
+            "group_doubleClick",
             "editableUpdateGroup",
             "item_updateGroup",
-            "onAddToGroup"
+            "item_onAddToGroup"
         ]);
     } else {
-        hidePropertiesIn(defaultProperties, _values, ["onAdd"]);
+        hidePropertiesIn(defaultProperties, _values, ["item_onAdd"]);
     }
 
     return defaultProperties;
