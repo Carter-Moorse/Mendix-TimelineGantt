@@ -140,9 +140,9 @@
                         <enumerationValue key="minute">Minute</enumerationValue>
                         <enumerationValue key="hour">Hour</enumerationValue>
                         <enumerationValue key="day">Day</enumerationValue>
-                        <enumerationValue key="week">Week</enumerationValue>
-                        <enumerationValue key="month">Month</enumerationValue>
-                        <enumerationValue key="year">Year</enumerationValue>
+                        <enumerationValue key="week">Week (7 days)</enumerationValue>
+                        <enumerationValue key="month">Month (30 days)</enumerationValue>
+                        <enumerationValue key="year">Year (365 days)</enumerationValue>
                     </enumerationValues>
                 </property>
                 <property key="zoomMin" type="integer" required="true" defaultValue="1">
@@ -157,9 +157,9 @@
                         <enumerationValue key="minute">Minute</enumerationValue>
                         <enumerationValue key="hour">Hour</enumerationValue>
                         <enumerationValue key="day">Day</enumerationValue>
-                        <enumerationValue key="week">Week</enumerationValue>
-                        <enumerationValue key="month">Month</enumerationValue>
-                        <enumerationValue key="year">Year</enumerationValue>
+                        <enumerationValue key="week">Week (7 days)</enumerationValue>
+                        <enumerationValue key="month">Month (30 days)</enumerationValue>
+                        <enumerationValue key="year">Year (365 days)</enumerationValue>
                     </enumerationValues>
                 </property>
                 <property key="horizontalScroll" type="boolean" required="true" defaultValue="false">
