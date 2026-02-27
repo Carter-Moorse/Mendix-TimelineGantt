@@ -239,18 +239,29 @@ export default function useOptions(props: TimelineGanttContainerProps) {
     };
 
     const onMove: WidgetTimelineOptionsItemCallbackFunction = (item, callback) => {
-        const groupObj = groups?.find(x => x.id === item.group)?.obj;
-        const groupGUID = groupObj && groupObj?.id;
-        const groupRef = groupObj && props.group_onMoveRef?.get(groupObj).displayValue;
-        const action =
-            props.editableUpdateGroup && groupObj
-                ? props.item_onMoveToGroup?.get(item.obj!)
-                : props.item_onMove?.get(item.obj!);
-        if (action?.canExecute) {
-            action.execute({ StartDate: item.start, EndDate: item.end, GroupGUID: groupGUID, GroupRef: groupRef });
-            callback(item);
+        const { start: StartDate, end: EndDate } = item;
+
+        if (props.editableUpdateGroup) {
+            const groupObj = groups?.find(x => x.id === item.group)?.obj;
+            const GroupGUID = groupObj && groupObj?.id?.toString();
+            const GroupRef = groupObj && props.group_onMoveRef?.get(groupObj).displayValue;
+            // Run group action
+            const action = props.item_onMoveToGroup?.get(item.obj!);
+            if (action?.canExecute) {
+                action.execute({ StartDate, EndDate, GroupGUID, GroupRef });
+                callback(item);
+            } else {
+                callback(null);
+            }
         } else {
-            callback(null);
+            // Run action
+            const action = props.item_onMove?.get(item.obj!);
+            if (action?.canExecute) {
+                action.execute({ StartDate, EndDate });
+                callback(item);
+            } else {
+                callback(null);
+            }
         }
     };
 
